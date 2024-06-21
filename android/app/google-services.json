@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "400610893610",
+    "project_id": "assetmanager-af9af",
+    "storage_bucket": "assetmanager-af9af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400610893610:android:d0d52393bd55c2e85a0853",
+        "android_client_info": {
+          "package_name": "com.thorpincorp.assets"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByTxZi5Tv203vhPbdIiAmNWYzoQIno-W0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
