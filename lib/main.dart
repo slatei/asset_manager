@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'screens/dashboard.dart';
 import 'package:provider/provider.dart';
 import 'services/api_service.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'services/auth_service.dart';
+import 'screens/dashboard.dart';
+import 'screens/sign_in.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -12,6 +16,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  if (kDebugMode) {
+    try {
+      await FirebaseAuth.instance.useAuthEmulator('127.0.0.1', 9099);
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
+  }
+
   runApp(const MyApp());
 }
 
@@ -20,15 +33,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ApiService(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ApiService()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
+      ],
       child: MaterialApp(
         title: 'Asset Management',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const Dashboard(),
+        home: const AuthWrapper(),
       ),
     );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    return StreamBuilder(
+        stream: authService.user,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData) {
+            return const Dashboard();
+          } else {
+            return const SignInScreen();
+          }
+        });
   }
 }
