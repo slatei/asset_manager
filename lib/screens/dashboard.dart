@@ -1,3 +1,4 @@
+import 'package:asset_store/state/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
@@ -5,7 +6,6 @@ import '../models/asset.dart';
 import '../widgets/asset_card.dart';
 import './asset_form.dart';
 import './receipt_upload.dart';
-import '../services/auth_service.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -18,7 +18,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final apiService = Provider.of<ApiService>(context);
-    final authService = Provider.of<AuthService>(context);
+    final authState = Provider.of<AuthState>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +27,7 @@ class _DashboardState extends State<Dashboard> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              authService.signOut(onSuccess: () {
+              await authState.signOut(() {
                 if (mounted) {
                   Navigator.of(context).pushReplacementNamed('/');
                 }
