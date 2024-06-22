@@ -61,7 +61,6 @@ class ApiService extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       List jsonResponse = response.data['data'];
-      print('Fetched assets: $jsonResponse'); // Debug print
       return jsonResponse.map((asset) => Asset.fromJson(asset)).toList();
     } else {
       throw Exception('Failed to load assets');

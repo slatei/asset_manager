@@ -5,17 +5,36 @@ import '../models/asset.dart';
 import '../widgets/asset_card.dart';
 import './asset_form.dart';
 import './receipt_upload.dart';
+import '../services/auth_service.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
   @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  @override
   Widget build(BuildContext context) {
     final apiService = Provider.of<ApiService>(context);
+    final authService = Provider.of<AuthService>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              authService.signOut(onSuccess: () {
+                if (mounted) {
+                  Navigator.of(context).pushReplacementNamed('/');
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Asset>>(
         future: apiService.fetchAssets(),
@@ -23,7 +42,6 @@ class Dashboard extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            print('Error: ${snapshot.error}'); // Debug print
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No assets found.'));
@@ -55,7 +73,6 @@ class Dashboard extends StatelessWidget {
                     itemCount: assets.length,
                     itemBuilder: (context, index) {
                       final asset = assets[index];
-                      print('Asset: ${asset.toJson()}'); // Debug print
                       return AssetCard(asset: asset);
                     },
                   ),

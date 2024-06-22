@@ -8,16 +8,8 @@ class AuthService extends ChangeNotifier {
 
   Stream<User?> get user => _firebaseAuth.authStateChanges();
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<void> signOut() async {
+  Future<void> signOut({required VoidCallback onSuccess}) async {
     await _firebaseAuth.signOut();
+    onSuccess();
   }
 }

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'services/api_service.dart';
 import 'services/auth_service.dart';
 import 'screens/dashboard.dart';
-import 'screens/sign_in.dart';
+import 'screens/auth.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -25,11 +25,11 @@ void main() async {
     }
   }
 
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const AuthWrapper(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const AuthWrapper(),
+          '/dashboard': (context) => const Dashboard(),
+        },
       ),
     );
   }
@@ -55,7 +59,7 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-    return StreamBuilder(
+    return StreamBuilder<User?>(
         stream: authService.user,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,7 +67,7 @@ class AuthWrapper extends StatelessWidget {
           } else if (snapshot.hasData) {
             return const Dashboard();
           } else {
-            return const SignInScreen();
+            return const AuthScreen();
           }
         });
   }

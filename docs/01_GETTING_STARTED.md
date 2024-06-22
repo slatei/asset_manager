@@ -1,22 +1,22 @@
 # Getting Started with Flutter
 
 - [Getting Started with Flutter](#getting-started-with-flutter)
-  - [Benefits of Using Flutter](#benefits-of-using-flutter)
-  - [Adapting the Project to Flutter](#adapting-the-project-to-flutter)
-  - [Example Flutter Project Structure](#example-flutter-project-structure)
-  - [Example Code Snippets](#example-code-snippets)
-    - [main.dart](#maindart)
-    - [models/asset.dart](#modelsassetdart)
-    - [services/api_service.dart](#servicesapi_servicedart)
-    - [screens/dashboard.dart](#screensdashboarddart)
-    - [widgets/asset_card.dart](#widgetsasset_carddart)
-  - [Getting Started with Flutter](#getting-started-with-flutter-1)
+    - [Benefits of Using Flutter](#benefits-of-using-flutter)
+    - [Adapting the Project to Flutter](#adapting-the-project-to-flutter)
+    - [Example Flutter Project Structure](#example-flutter-project-structure)
+    - [Example Code Snippets](#example-code-snippets)
+      - [main.dart](#maindart)
+      - [models/asset.dart](#modelsassetdart)
+      - [services/api\_service.dart](#servicesapi_servicedart)
+      - [screens/dashboard.dart](#screensdashboarddart)
+      - [widgets/asset\_card.dart](#widgetsasset_carddart)
+    - [Getting Started with Flutter](#getting-started-with-flutter-1)
   - [Adding a Mock Server](#adding-a-mock-server)
     - [Adding a Mock Server with Flutter](#adding-a-mock-server-with-flutter)
       - [Step-by-Step Instructions:](#step-by-step-instructions)
     - [Step-by-Step Solution](#step-by-step-solution)
     - [Running the Project](#running-the-project)
-    - [api_service.dart](#api_servicedart)
+    - [api\_service.dart](#api_servicedart)
     - [main.dart](#maindart-1)
     - [Running the Project](#running-the-project-1)
     - [asset.dart](#assetdart)
@@ -115,10 +115,10 @@ import 'package:provider/provider.dart';
 import 'services/api_service.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -450,10 +450,10 @@ You can use the `http_mock_adapter` package to mock HTTP requests in Flutter. Th
    import 'services/api_service.dart';
 
    void main() {
-     runApp(MyApp());
+     runApp(App());
    }
 
-   class MyApp extends StatelessWidget {
+   class App extends StatelessWidget {
      @override
      Widget build(BuildContext context) {
        return ChangeNotifierProvider(
@@ -616,10 +616,10 @@ The error occurs because the `Dio` class and the `DioAdapter` class are not impo
    import 'services/api_service.dart';
 
    void main() {
-     runApp(MyApp());
+     runApp(App());
    }
 
-   class MyApp extends StatelessWidget {
+   class App extends StatelessWidget {
      @override
      Widget build(BuildContext context) {
        return ChangeNotifierProvider(
@@ -760,10 +760,10 @@ import 'package:provider/provider.dart';
 import 'services/api_service.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

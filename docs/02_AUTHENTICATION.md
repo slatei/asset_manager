@@ -12,6 +12,13 @@
     - [Step-by-Step Instructions](#step-by-step-instructions-1)
     - [Full Example Code Recap](#full-example-code-recap)
   - [Dealing With MacOS Local Development Issues](#dealing-with-macos-local-development-issues)
+  - [Managing User State](#managing-user-state)
+    - [Step-by-Step Instructions](#step-by-step-instructions-2)
+    - [1. Add Dependencies](#1-add-dependencies)
+    - [2. Initialize Firebase in Your Flutter App](#2-initialize-firebase-in-your-flutter-app)
+    - [3. Use `firebase_ui_auth` for Authentication](#3-use-firebase_ui_auth-for-authentication)
+    - [4. Add a Logout Mechanism](#4-add-a-logout-mechanism)
+    - [Running the Project](#running-the-project-1)
 
 Google Cloud Platform (GCP) offers a robust authentication solution called Firebase Authentication. Firebase Authentication provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to your app. It supports authentication using passwords, phone numbers, and popular federated identity providers like Google, Facebook, and Twitter.
 
@@ -79,10 +86,10 @@ import 'services/auth_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -368,10 +375,10 @@ Using the Firebase Authentication emulator allows you to develop and test your a
        await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
      }
 
-     runApp(MyApp());
+     runApp(App());
    }
 
-   class MyApp extends StatelessWidget {
+   class App extends StatelessWidget {
      @override
      Widget build(BuildContext context) {
        return MultiProvider(
@@ -537,10 +544,10 @@ void main() async {
     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   }
 
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -629,3 +636,355 @@ class _SignInScreenState extends State<SignInScreen> {
 ## Dealing With MacOS Local Development Issues
 
 <https://codewithandrea.com/articles/flutter-firebase-auth-macos/>
+
+## Managing User State
+
+Using `firebase_ui_auth` for authentication simplifies the process of adding authentication to your Flutter app with pre-built UI screens and functionalities. Here’s how you can integrate `firebase_ui_auth` for authentication and add a logout mechanism.
+
+### Step-by-Step Instructions
+
+1. **Add Dependencies**:
+   Add the required Firebase dependencies to your `pubspec.yaml` file.
+
+2. **Initialize Firebase in Your Flutter App**:
+   Initialize Firebase in your Flutter app.
+
+3. **Use `firebase_ui_auth` for Authentication**:
+   Update your app to use `firebase_ui_auth` for sign-in and sign-out functionalities.
+
+4. **Add a Logout Mechanism**:
+   Add a button to allow users to log out.
+
+### 1. Add Dependencies
+
+Update your `pubspec.yaml` file to include the `firebase_ui_auth` package along with other required Firebase packages:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^5.0.0
+  http: ^0.13.3
+  sqflite: ^2.0.0+3
+  path_provider: ^2.0.2
+  image_picker: ^0.8.4+1
+  dio: ^4.0.7
+  firebase_core: ^2.0.0
+  firebase_auth: ^4.0.0
+  firebase_ui_auth: ^1.0.0
+```
+
+Run `flutter pub get` to install the new dependencies.
+
+### 2. Initialize Firebase in Your Flutter App
+
+Update your `main.dart` to initialize Firebase:
+
+**lib/main.dart**:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'services/api_service.dart';
+import 'services/auth_service.dart';
+import 'screens/dashboard.dart';
+import 'firebase_options.dart';  // Automatically generated after running FlutterFire CLI
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  if (const String.fromEnvironment('USE_FIREBASE_EMULATOR') == 'true') {
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  }
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ApiService()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
+      ],
+      child: MaterialApp(
+        title: 'Asset Management',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: AuthWrapper(),
+      ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    return StreamBuilder<User?>(
+      stream: authService.user,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData) {
+          return Dashboard();
+        } else {
+          return SignInScreen();
+        }
+      },
+    );
+  }
+}
+```
+
+### 3. Use `firebase_ui_auth` for Authentication
+
+Update your `AuthService` to handle sign-in and sign-out, and replace the custom sign-in screen with `firebase_ui_auth`.
+
+**lib/services/auth_service.dart**:
+
+```dart
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+
+class AuthService extends ChangeNotifier {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  User? get currentUser => _firebaseAuth.currentUser;
+
+  Stream<User?> get user => _firebaseAuth.authStateChanges();
+
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
+  }
+}
+```
+
+Update `lib/screens/sign_in.dart` to use `firebase_ui_auth`:
+
+**lib/screens/sign_in.dart**:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+
+class SignInScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SignInScreen(
+      providers: [
+        EmailAuthProvider(),
+        GoogleProvider(clientId: 'YOUR_GOOGLE_CLIENT_ID'),
+      ],
+      actions: [
+        AuthStateChangeAction<SignedIn>((context, state) {
+          Navigator.of(context).pushReplacementNamed('/dashboard');
+        }),
+      ],
+    );
+  }
+}
+```
+
+Replace the `AuthWrapper` in `main.dart` to navigate to the `Dashboard` or `SignInScreen` based on the authentication state:
+
+**lib/main.dart** (updated):
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'services/api_service.dart';
+import 'services/auth_service.dart';
+import 'screens/dashboard.dart';
+import 'screens/sign_in.dart';
+import 'firebase_options.dart';  // Automatically generated after running FlutterFire CLI
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  if (const String.fromEnvironment('USE_FIREBASE_EMULATOR') == 'true') {
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  }
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ApiService()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
+      ],
+      child: MaterialApp(
+        title: 'Asset Management',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => AuthWrapper(),
+          '/dashboard': (context) => Dashboard(),
+        },
+      ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    return StreamBuilder<User?>(
+      stream: authService.user,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData) {
+          return Dashboard();
+        } else {
+          return SignInScreen();
+        }
+      },
+    );
+  }
+}
+```
+
+### 4. Add a Logout Mechanism
+
+Update your `Dashboard` screen to include a logout button:
+
+**lib/screens/dashboard.dart**:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/api_service.dart';
+import '../widgets/asset_card.dart';
+import './asset_form.dart';
+import './receipt_upload.dart';
+import '../services/auth_service.dart';
+
+class Dashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final apiService = Provider.of<ApiService>(context);
+    final authService = Provider.of<AuthService>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              await authService.signOut();
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+        ],
+      ),
+      body: FutureBuilder<List<Asset>>(
+        future: apiService.fetchAssets(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No assets found.'));
+          } else {
+            final assets = snapshot.data!;
+            final totalCost = assets.fold(0.0, (sum, asset) => sum + asset.cost);
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Total Assets: ${assets.length}',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Total Cost: \$${totalCost.toStringAsFixed(2)}',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: assets.length,
+                    itemBuilder: (context, index) {
+                      final asset = assets[index];
+                      return AssetCard(asset: asset);
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'addAsset',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AssetForm()),
+              );
+            },
+            child: Icon(Icons.add),
+            tooltip: 'Add Asset',
+          ),
+          SizedBox(height: 16),
+          FloatingActionButton(
+            heroTag: 'uploadReceipt',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReceiptUpload()),
+              );
+            },
+            child: Icon(Icons.upload),
+            tooltip: '
+
+Upload Receipt',
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### Running the Project
+
+After making these changes, save all files and run your project again:
+
+```sh
+flutter run --dart-define=USE_FIREBASE_EMULATOR=true
+```
+
+This setup will use `firebase_ui_auth` for the authentication screen, provide a mechanism for users to log in and out, and ensure the authentication state is managed and reflected in the app.
