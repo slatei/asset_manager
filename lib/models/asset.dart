@@ -6,13 +6,14 @@ class Asset {
   final double cost;
   final String? photoPath;
 
-  Asset(
-      {required this.id,
-      required this.name,
-      required this.category,
-      required this.purchaseDate,
-      required this.cost,
-      this.photoPath});
+  Asset({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.purchaseDate,
+    required this.cost,
+    this.photoPath,
+  });
 
   factory Asset.fromJson(Map<String, dynamic> json) {
     return Asset(

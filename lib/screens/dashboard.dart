@@ -1,11 +1,13 @@
-import 'package:asset_store/state/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/api_service.dart';
-import '../models/asset.dart';
-import '../widgets/asset_card.dart';
-import './asset_form.dart';
-import './receipt_upload.dart';
+
+import 'package:asset_store/models/asset.dart';
+import 'package:asset_store/screens/asset_form.dart';
+import 'package:asset_store/screens/receipt_upload.dart';
+import 'package:asset_store/services/api_service.dart';
+import 'package:asset_store/widgets/asset_card.dart';
+import 'package:asset_store/state/asset_state.dart';
+import 'package:asset_store/state/auth_state.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -85,16 +87,27 @@ class _DashboardState extends State<Dashboard> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            heroTag: 'addAsset',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AssetForm()),
-              );
-            },
-            tooltip: 'Add Asset',
-            child: const Icon(Icons.add),
+          Consumer<AssetState>(
+            builder: (context, appState, _) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'addAsset',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AssetForm(
+                                addAsset: (asset) =>
+                                    appState.addAssetToDatabase(asset),
+                              )),
+                    );
+                  },
+                  tooltip: 'Add Asset',
+                  child: const Icon(Icons.add),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           FloatingActionButton(

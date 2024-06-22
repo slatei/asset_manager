@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/asset.dart';
+
+import 'package:asset_store/models/asset.dart';
 
 class AssetCard extends StatelessWidget {
   final Asset asset;
