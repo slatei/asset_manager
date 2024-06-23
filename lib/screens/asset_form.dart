@@ -26,7 +26,6 @@ class _AssetFormState extends State<AssetForm> {
       _formKey.currentState!.save();
 
       final asset = Asset(
-        id: 0,
         name: _name!,
         category: _category!,
         purchaseDate: _purchaseDate!,

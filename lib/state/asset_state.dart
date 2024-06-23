@@ -5,7 +5,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:asset_store/models/asset.dart';
 
 class AssetState extends ChangeNotifier {
-  Future<DocumentReference> addAssetToDatabase(Asset asset) {
+  List<Asset> _assets = [];
+  List<Asset> get assets => _assets;
+
+  AssetState() {
+    _listenToAssets();
+  }
+
+  void _listenToAssets() {
+    FirebaseFirestore.instance
+        .collection('assets')
+        .snapshots()
+        .listen((snapshot) {
+      _assets = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Asset.fromJson(data);
+      }).toList();
+      notifyListeners();
+    });
+  }
+
+  Future<DocumentReference> addAssetToDatabase(Asset asset) async {
     return FirebaseFirestore.instance
         .collection('assets')
         .add(<String, dynamic>{
@@ -19,4 +39,7 @@ class AssetState extends ChangeNotifier {
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
+
+  double get totalCost =>
+      _assets.fold(0.0, (assetSum, asset) => assetSum + asset.cost);
 }

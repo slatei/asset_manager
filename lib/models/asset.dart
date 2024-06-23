@@ -1,5 +1,5 @@
 class Asset {
-  final int id;
+  final String? id;
   final String name;
   final String category;
   final String purchaseDate;
@@ -7,7 +7,7 @@ class Asset {
   final String? photoPath;
 
   Asset({
-    required this.id,
+    this.id,
     required this.name,
     required this.category,
     required this.purchaseDate,
@@ -17,7 +17,7 @@ class Asset {
 
   factory Asset.fromJson(Map<String, dynamic> json) {
     return Asset(
-      id: json['id'],
+      id: json['id'] ?? '',
       name: json['name'] ?? 'Unknown',
       category: json['category'] ?? 'Un-categorized',
       purchaseDate: json['purchase_date'] ?? 'Unknown',
