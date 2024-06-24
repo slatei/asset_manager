@@ -5,7 +5,11 @@
     "dictionaries": [],
     "language": "en,en-US",
     "words": [
+        "assetmanager",
+        "codelab",
+        "cupertino",
         "firestore",
+        "flutterfire",
         "Schyler",
         "sqflite"
     ],

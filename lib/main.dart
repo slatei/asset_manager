@@ -40,8 +40,13 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ApiService()),
-        ChangeNotifierProvider(create: (context) => AuthState()),
-        ChangeNotifierProvider(create: (context) => AssetState()),
+        ChangeNotifierProvider(
+            create: (context) => AuthState(auth: FirebaseAuth.instance)),
+        ChangeNotifierProvider(
+            create: (context) => AssetState(
+                  firestore: FirebaseFirestore.instance,
+                  auth: FirebaseAuth.instance,
+                )),
       ],
       child: MaterialApp(
         title: 'Asset Management',

@@ -4,39 +4,35 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:asset_store/models/asset.dart';
 
+const assetsCollection = 'assets';
+
 class AssetState extends ChangeNotifier {
+  final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
   List<Asset> _assets = [];
   List<Asset> get assets => _assets;
 
-  AssetState() {
+  AssetState({required this.firestore, required this.auth}) {
     _listenToAssets();
   }
 
   void _listenToAssets() {
-    FirebaseFirestore.instance
-        .collection('assets')
-        .snapshots()
-        .listen((snapshot) {
-      _assets = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return Asset.fromJson(data);
-      }).toList();
+    firestore.collection('assets').snapshots().listen((snapshot) {
+      _assets = snapshot.docs.map((doc) => Asset.fromJson(doc.data())).toList();
       notifyListeners();
     });
   }
 
   Future<DocumentReference> addAssetToDatabase(Asset asset) async {
-    return FirebaseFirestore.instance
-        .collection('assets')
-        .add(<String, dynamic>{
+    return firestore.collection(assetsCollection).add(<String, dynamic>{
       'name': asset.name,
       'category': asset.category,
       'purchaseDate': asset.purchaseDate,
       'cost': asset.cost,
       'photoPath': asset.photoPath,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'owner': FirebaseAuth.instance.currentUser!.displayName,
-      'userId': FirebaseAuth.instance.currentUser!.uid,
+      'owner': auth.currentUser!.displayName,
+      'userId': auth.currentUser!.uid,
     });
   }
 
