@@ -21,6 +21,9 @@ firebase init emulators
 firebase emulators:start
 
 firebase emulators:start --log-verbosity debug
+
+firebase emulators:export ./emulatorDataExport
+firebase emulators:start --import test/emulator_data
 ```
 
 ## Flutter

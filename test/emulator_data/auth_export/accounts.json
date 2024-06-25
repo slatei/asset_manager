@@ -1,0 +1,30 @@
+{
+  "kind": "identitytoolkit#DownloadAccountResponse",
+  "users": [
+    {
+      "localId": "yyCzdJ3Pth7LoCEqp14pYLebMkDC",
+      "lastLoginAt": "1719299662145",
+      "displayName": "",
+      "photoUrl": "",
+      "emailVerified": true,
+      "email": "user@example.com",
+      "salt": "fakeSaltLOka59NE4v2SDRXyiBv4",
+      "passwordHash": "fakeHash:salt=fakeSaltLOka59NE4v2SDRXyiBv4:password=greenhouse",
+      "passwordUpdatedAt": 1719299643526,
+      "validSince": "1719299643",
+      "mfaInfo": [],
+      "createdAt": "1719299643526",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "user@example.com",
+          "federatedId": "user@example.com",
+          "rawId": "user@example.com",
+          "displayName": "",
+          "photoUrl": ""
+        }
+      ],
+      "lastRefreshAt": "2024-06-25T07:14:22.145Z"
+    }
+  ]
+}
