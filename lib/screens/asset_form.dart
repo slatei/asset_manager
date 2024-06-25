@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:asset_store/models/asset.dart';
 
 class AssetForm extends StatefulWidget {
   const AssetForm({required this.addAsset, super.key});
 
-  final FutureOr<void> Function(Asset asset) addAsset;
+  final FutureOr<void> Function(Asset asset,
+      {File? imageFile, Uint8List? imageBytes}) addAsset;
 
   @override
   State<AssetForm> createState() => _AssetFormState();
@@ -14,12 +18,38 @@ class AssetForm extends StatefulWidget {
 
 class _AssetFormState extends State<AssetForm> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_AssetFormState');
+  final ImagePicker _picker = ImagePicker();
+  File? _imageFile;
+  Uint8List? _imageBytes;
+  String? _imageUrl;
 
   String? _name;
   String? _category;
   String? _purchaseDate;
   double? _cost;
-  String? _photoPath;
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        if (kIsWeb) {
+          final bytes = await pickedFile.readAsBytes();
+          setState(() {
+            _imageBytes = bytes;
+            _imageUrl = pickedFile.path;
+          });
+        } else {
+          setState(() {
+            _imageFile = File(pickedFile.path);
+          });
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -30,11 +60,19 @@ class _AssetFormState extends State<AssetForm> {
         category: _category!,
         purchaseDate: _purchaseDate!,
         cost: _cost!,
-        photoPath: _photoPath,
       );
 
-      await widget.addAsset(asset);
+      if (kIsWeb) {
+        await widget.addAsset(asset, imageBytes: _imageBytes);
+      } else {
+        await widget.addAsset(asset, imageFile: _imageFile);
+      }
 
+      setState(() {
+        _imageFile = null;
+        _imageBytes = null;
+        _imageUrl = null;
+      });
       _formKey.currentState?.reset();
     }
   }
@@ -102,11 +140,14 @@ class _AssetFormState extends State<AssetForm> {
                 _cost = double.parse(value!);
               },
             ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Photo Path'),
-              onSaved: (value) {
-                _photoPath = value;
-              },
+            const SizedBox(height: 20),
+            if (_imageFile != null || _imageUrl != null)
+              kIsWeb
+                  ? Image.network(_imageUrl!, height: 200)
+                  : Image.file(_imageFile!, height: 200),
+            ElevatedButton(
+              onPressed: _pickImage,
+              child: const Text('Upload Receipt'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

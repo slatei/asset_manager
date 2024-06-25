@@ -20,9 +20,9 @@ class Asset {
       id: json['id'] ?? '',
       name: json['name'] ?? 'Unknown',
       category: json['category'] ?? 'Un-categorized',
-      purchaseDate: json['purchase_date'] ?? 'Unknown',
+      purchaseDate: json['purchaseDate'] ?? 'Unknown',
       cost: (json['cost'] ?? 0).toDouble(),
-      photoPath: json['photo_path'],
+      photoPath: json['photoPath'],
     );
   }
 

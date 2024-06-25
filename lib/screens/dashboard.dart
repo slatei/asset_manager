@@ -80,8 +80,10 @@ class _DashboardState extends State<Dashboard> {
             context,
             MaterialPageRoute(
               builder: (context) => AssetForm(
-                addAsset: (asset) =>
-                    context.read<AssetState>().addAssetToDatabase(asset),
+                addAsset: (asset, {imageFile, imageBytes}) => context
+                    .read<AssetState>()
+                    .addAssetToDatabase(asset,
+                        imageFile: imageFile, imageBytes: imageBytes),
               ),
             ),
           );

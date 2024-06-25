@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,8 +24,8 @@ void main() async {
     try {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
       await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
     } catch (e) {
-      // ignore: avoid_print
       print(e);
     }
   }
@@ -46,6 +47,7 @@ class App extends StatelessWidget {
             create: (context) => AssetState(
                   firestore: FirebaseFirestore.instance,
                   auth: FirebaseAuth.instance,
+                  storage: FirebaseStorage.instance,
                 )),
       ],
       child: MaterialApp(
