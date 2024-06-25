@@ -7,10 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:asset_store/models/asset.dart';
 
 class AssetForm extends StatefulWidget {
-  const AssetForm({required this.addAsset, super.key});
-
   final FutureOr<void> Function(Asset asset,
       {File? imageFile, Uint8List? imageBytes}) addAsset;
+  final ImagePicker imagePicker;
+
+  const AssetForm(
+      {required this.addAsset, required this.imagePicker, super.key});
 
   @override
   State<AssetForm> createState() => _AssetFormState();
@@ -18,7 +20,6 @@ class AssetForm extends StatefulWidget {
 
 class _AssetFormState extends State<AssetForm> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_AssetFormState');
-  final ImagePicker _picker = ImagePicker();
   File? _imageFile;
   Uint8List? _imageBytes;
   String? _imageUrl;
@@ -30,7 +31,8 @@ class _AssetFormState extends State<AssetForm> {
 
   Future<void> _pickImage() async {
     try {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      final pickedFile =
+          await widget.imagePicker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         if (kIsWeb) {
           final bytes = await pickedFile.readAsBytes();

@@ -1,6 +1,7 @@
 import 'package:asset_store/state/auth_state.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -19,13 +20,16 @@ void main() {
 
   late FakeFirebaseFirestore fakeFirestore;
   late MockFirebaseAuth mockAuth;
+  late MockFirebaseStorage mockStorage;
   late AssetState assetState;
   late AuthState authState;
 
   setUp(() async {
     mockAuth = MockFirebaseAuth(mockUser: user);
+    mockStorage = MockFirebaseStorage();
     fakeFirestore = FakeFirebaseFirestore();
-    assetState = AssetState(firestore: fakeFirestore, auth: mockAuth);
+    assetState = AssetState(
+        firestore: fakeFirestore, auth: mockAuth, storage: mockStorage);
     authState = AuthState(auth: mockAuth);
 
     // Sign in the fake user

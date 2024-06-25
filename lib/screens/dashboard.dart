@@ -1,5 +1,6 @@
 import 'package:asset_store/widgets/asset_card.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:asset_store/screens/asset_form.dart';
@@ -84,6 +85,7 @@ class _DashboardState extends State<Dashboard> {
                     .read<AssetState>()
                     .addAssetToDatabase(asset,
                         imageFile: imageFile, imageBytes: imageBytes),
+                imagePicker: ImagePicker(),
               ),
             ),
           );
