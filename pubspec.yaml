@@ -47,6 +47,8 @@ dependencies:
   firebase_ui_auth: ^1.15.0
   firebase_storage: ^12.0.1
   universal_io: ^2.2.2
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
 
 dev_dependencies:
   flutter_test:

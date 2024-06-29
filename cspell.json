@@ -11,8 +11,11 @@
         "cupertino",
         "firestore",
         "flutterfire",
+        "googleapis",
+        "googleusercontent",
         "Schyler",
-        "sqflite"
+        "sqflite",
+        "thorpincorp"
     ],
     "ignoreWords": [],
     "import": []
