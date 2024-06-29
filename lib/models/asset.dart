@@ -2,7 +2,7 @@ class Asset {
   final String? id;
   final String name;
   final String category;
-  final String purchaseDate;
+  final String? purchaseDate;
   final double cost;
   final String? photoPath;
 
@@ -10,7 +10,7 @@ class Asset {
     this.id,
     required this.name,
     required this.category,
-    required this.purchaseDate,
+    this.purchaseDate,
     required this.cost,
     this.photoPath,
   });
@@ -20,7 +20,7 @@ class Asset {
       id: json['id'] ?? '',
       name: json['name'] ?? 'Unknown',
       category: json['category'] ?? 'Un-categorized',
-      purchaseDate: json['purchaseDate'] ?? 'Unknown',
+      purchaseDate: json['purchaseDate'] ?? '',
       cost: (json['cost'] ?? 0).toDouble(),
       photoPath: json['photoPath'],
     );

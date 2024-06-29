@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:asset_store/models/asset.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AssetForm extends StatefulWidget {
@@ -28,7 +29,7 @@ class _AssetFormState extends State<AssetForm> {
 
   String? _name;
   String? _category;
-  String? _purchaseDate;
+  DateTime? _purchaseDate;
   double? _cost;
 
   final invalidCategorySymbols = RegExp(r'[\^$*.\[\]{}()?\-"!@#%&/\,><:;_~`+='
@@ -74,7 +75,7 @@ class _AssetFormState extends State<AssetForm> {
       final asset = Asset(
         name: _name!,
         category: _category!,
-        purchaseDate: _purchaseDate!,
+        purchaseDate: _purchaseDate?.toIso8601String(),
         cost: _cost!,
       );
 
@@ -163,6 +164,20 @@ class _AssetFormState extends State<AssetForm> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 3)),
+    );
+    if (picked != null && picked != _purchaseDate) {
+      setState(() {
+        _purchaseDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,7 +190,11 @@ class _AssetFormState extends State<AssetForm> {
           key: _formKey,
           child: ListView(children: <Widget>[
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: const InputDecoration(
+                  labelText: 'Name',
+                  icon: Icon(
+                    Icons.description,
+                  )),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a name';
@@ -192,7 +211,12 @@ class _AssetFormState extends State<AssetForm> {
                   categoriesState.categories.toSet().toList();
 
               return DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Category'),
+                decoration: const InputDecoration(
+                  labelText: 'Category',
+                  icon: Icon(
+                    Icons.category_outlined,
+                  ),
+                ),
                 // Ensures long categories don't overflow the displayed text box
                 isExpanded: true,
                 value: _category,
@@ -250,20 +274,31 @@ class _AssetFormState extends State<AssetForm> {
                 },
               );
             }),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Purchase Date'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a purchase date';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _purchaseDate = value;
-              },
+            GestureDetector(
+              onTap: () => _selectDate(context),
+              child: AbsorbPointer(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    icon: const Icon(Icons.calendar_today),
+                    labelText: _purchaseDate == null
+                        ? 'Select a date'
+                        : DateFormat.yMMMd().format(_purchaseDate!),
+                  ),
+                  validator: (value) {
+                    return null; // No validation for optional field
+                  },
+                  onSaved: (value) {
+                    // No action needed as _purchaseDate is set directly by _selectDate
+                  },
+                ),
+              ),
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Cost'),
+              decoration: const InputDecoration(
+                  labelText: 'Cost',
+                  icon: Icon(
+                    Icons.attach_money,
+                  )),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
