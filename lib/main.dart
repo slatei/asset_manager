@@ -1,3 +1,4 @@
+import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,10 @@ class App extends StatelessWidget {
                   firestore: FirebaseFirestore.instance,
                   auth: FirebaseAuth.instance,
                   storage: FirebaseStorage.instance,
+                )),
+        ChangeNotifierProvider(
+            create: (context) => CategoriesState(
+                  firestore: FirebaseFirestore.instance,
                 )),
       ],
       child: MaterialApp(
