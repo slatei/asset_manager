@@ -1,4 +1,4 @@
-import 'package:asset_store/widgets/asset_card.dart';
+import 'package:asset_store/widgets/asset_form/asset_card.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
