@@ -1,9 +1,8 @@
+import 'package:asset_store/models/asset_orig.dart';
 import 'package:flutter/material.dart';
 
-import 'package:asset_store/models/asset.dart';
-
 class AssetCard extends StatelessWidget {
-  final Asset asset;
+  final AssetOriginal asset;
 
   const AssetCard({super.key, required this.asset});
 

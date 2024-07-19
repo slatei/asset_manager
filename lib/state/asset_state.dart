@@ -1,10 +1,9 @@
+import 'package:asset_store/models/asset_orig.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
-
-import 'package:asset_store/models/asset.dart';
 
 const assetsCollection = 'assets';
 
@@ -13,8 +12,8 @@ class AssetState extends ChangeNotifier {
   final FirebaseAuth auth;
   final FirebaseStorage storage;
 
-  List<Asset> _assets = [];
-  List<Asset> get assets => _assets;
+  List<AssetOriginal> _assets = [];
+  List<AssetOriginal> get assets => _assets;
 
   AssetState(
       {required this.firestore, required this.auth, required this.storage}) {
@@ -23,12 +22,14 @@ class AssetState extends ChangeNotifier {
 
   void _listenToAssets() {
     firestore.collection('assets').snapshots().listen((snapshot) {
-      _assets = snapshot.docs.map((doc) => Asset.fromJson(doc.data())).toList();
+      _assets = snapshot.docs
+          .map((doc) => AssetOriginal.fromJson(doc.data()))
+          .toList();
       notifyListeners();
     });
   }
 
-  Future<DocumentReference> addAssetToDatabase(Asset asset,
+  Future<DocumentReference> addAssetToDatabase(AssetOriginal asset,
       {File? imageFile, Uint8List? imageBytes}) async {
     String? photoUrl;
 

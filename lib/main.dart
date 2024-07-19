@@ -1,3 +1,5 @@
+import 'package:asset_store/models/asset/category.dart';
+import 'package:asset_store/screens/lists/asset_header.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -59,10 +61,12 @@ class App extends StatelessWidget {
         title: 'Asset Management',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          useMaterial3: true,
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => const AuthWrapper(),
+          // '/': (context) => const AuthWrapper(),
+          '/': (context) => const Sandbox(),
           '/dashboard': (context) => const Dashboard(),
         },
       ),
@@ -81,5 +85,23 @@ class AuthWrapper extends StatelessWidget {
     } else {
       return const Dashboard();
     }
+  }
+}
+
+class Sandbox extends StatelessWidget {
+  const Sandbox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Sandbox'),
+          backgroundColor: Colors.grey,
+        ),
+        body: AssetHeader(
+          label: DefaultCategories.clothing.category.name,
+          labelIcon: DefaultCategories.clothing.category.icon!,
+          value: 10.231,
+        ));
   }
 }

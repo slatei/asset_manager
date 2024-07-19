@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:asset_store/models/asset_orig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:asset_store/screens/asset_form.dart';
-import 'package:asset_store/models/asset.dart';
 import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -16,7 +16,7 @@ void main() {
     setUp(() {
       mockImagePicker = MockImagePicker();
       assetForm = AssetForm(
-        addAsset: (Asset asset,
+        addAsset: (AssetOriginal asset,
             {File? imageFile, Uint8List? imageBytes}) async {
           // Mock the addAsset function
         },

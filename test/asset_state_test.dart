@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 
 import 'package:asset_store/state/asset_state.dart';
-import 'package:asset_store/models/asset.dart';
+import 'package:asset_store/models/asset_orig.dart';
 
 void main() async {
   final user = MockUser(
@@ -38,7 +38,7 @@ void main() async {
   });
 
   test('adding an asset updates the asset list', () async {
-    final asset = Asset(
+    final asset = AssetOriginal(
       id: '',
       name: 'Laptop',
       category: 'Technology',

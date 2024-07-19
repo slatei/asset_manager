@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import 'package:asset_store/state/asset_state.dart';
 import 'package:asset_store/screens/dashboard.dart';
-import 'package:asset_store/models/asset.dart';
+import 'package:asset_store/models/asset_orig.dart';
 
 void main() {
   final user = MockUser(
@@ -41,7 +41,7 @@ void main() {
 
   testWidgets('Dashboard displays assets and total cost',
       (WidgetTester tester) async {
-    assetState.addAssetToDatabase(Asset(
+    assetState.addAssetToDatabase(AssetOriginal(
       id: '',
       name: 'Laptop',
       category: 'Technology',

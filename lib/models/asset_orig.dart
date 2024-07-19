@@ -1,4 +1,4 @@
-class Asset {
+class AssetOriginal {
   final String? id;
   final String name;
   final String category;
@@ -7,7 +7,7 @@ class Asset {
   final String? photoPath;
   final List<String>? labels;
 
-  Asset({
+  AssetOriginal({
     this.id,
     required this.name,
     required this.category,
@@ -17,8 +17,8 @@ class Asset {
     this.labels,
   });
 
-  factory Asset.fromJson(Map<String, dynamic> json) {
-    return Asset(
+  factory AssetOriginal.fromJson(Map<String, dynamic> json) {
+    return AssetOriginal(
       id: json['id'] ?? '',
       name: json['name'] ?? 'Unknown',
       category: json['category'] ?? 'Un-categorized',
