@@ -59,6 +59,7 @@ class AssetState extends ChangeNotifier {
       'purchaseDate': asset.purchaseDate,
       'cost': asset.cost,
       'photoPath': photoUrl,
+      'labels': asset.labels,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'owner': auth.currentUser!.displayName,
       'userId': auth.currentUser!.uid,

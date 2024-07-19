@@ -4,7 +4,7 @@
       "android": {
         "default": {
           "projectId": "assetmanager-af9af",
-          "appId": "1:400610893610:android:899d719dac95a4975a0853",
+          "appId": "1:400610893610:android:d0d52393bd55c2e85a0853",
           "fileOutput": "android/app/google-services.json"
         }
       },
@@ -28,35 +28,26 @@
         "lib/firebase_options.dart": {
           "projectId": "assetmanager-af9af",
           "configurations": {
-            "android": "1:400610893610:android:899d719dac95a4975a0853",
+            "android": "1:400610893610:android:d0d52393bd55c2e85a0853",
             "ios": "1:400610893610:ios:3968901bea3e61595a0853",
             "macos": "1:400610893610:ios:3968901bea3e61595a0853",
-            "web": "1:400610893610:web:52e5d57b414feb665a0853"
+            "web": "1:400610893610:web:52e5d57b414feb665a0853",
+            "windows": "1:400610893610:web:3a5a17a012b717b55a0853"
           }
         }
       }
     }
   },
   "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "ui": {
-      "enabled": true
-    },
+    "auth": { "port": 9099 },
+    "ui": { "enabled": true },
     "singleProjectMode": true,
-    "firestore": {
-      "port": 8080
-    },
-    "storage": {
-      "port": 9199
-    }
+    "firestore": { "port": 8080 },
+    "storage": { "port": 9199 }
   },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "storage": {
-    "rules": "storage.rules"
-  }
+  "storage": { "rules": "storage.rules" }
 }

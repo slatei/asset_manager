@@ -4,4 +4,11 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Enabling use of Firebase Emulator Suite -->
+    <!-- https://firebase.flutter.dev/docs/manual-installation/android/ -->
+    <application android:usesCleartextTraffic="true">
+        <!-- possibly other elements -->
+    </application>
 </manifest>
+

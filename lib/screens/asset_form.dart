@@ -23,6 +23,8 @@ class AssetForm extends StatefulWidget {
 
 class _AssetFormState extends State<AssetForm> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_AssetFormState');
+  final _labelsController = TextEditingController();
+
   File? _imageFile;
   Uint8List? _imageBytes;
   String? _imageUrl;
@@ -31,6 +33,7 @@ class _AssetFormState extends State<AssetForm> {
   String? _category;
   DateTime? _purchaseDate;
   double? _cost;
+  List<String> _labels = [];
 
   final invalidCategorySymbols = RegExp(r'[\^$*.\[\]{}()?\-"!@#%&/\,><:;_~`+='
       "'"
@@ -77,6 +80,7 @@ class _AssetFormState extends State<AssetForm> {
         category: _category!,
         purchaseDate: _purchaseDate?.toIso8601String(),
         cost: _cost!,
+        labels: _labels,
       );
 
       if (kIsWeb) {
@@ -89,9 +93,28 @@ class _AssetFormState extends State<AssetForm> {
         _imageFile = null;
         _imageBytes = null;
         _imageUrl = null;
+        _labels = [];
+        _category = null;
+        _purchaseDate = null;
       });
       _formKey.currentState?.reset();
     }
+  }
+
+  void _addLabel() {
+    final String label = _labelsController.text.trim();
+    if (label.isNotEmpty && !_labels.contains(label)) {
+      setState(() {
+        _labels.add(label);
+        _labelsController.clear();
+      });
+    }
+  }
+
+  void _removeLabel(String label) {
+    setState(() {
+      _labels.remove(label);
+    });
   }
 
   void _addNewCategory(BuildContext context) {
@@ -293,6 +316,37 @@ class _AssetFormState extends State<AssetForm> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _labelsController,
+              decoration: InputDecoration(
+                labelText: 'Add Labels',
+                icon: const Icon(Icons.label),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: _addLabel,
+                ),
+              ),
+              onFieldSubmitted: (_) => _addLabel(),
+            ),
+            const SizedBox(height: 20),
+            _labels.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 8.0,
+                        children: _labels
+                            .map((label) => Chip(
+                                  label: Text(label),
+                                  onDeleted: () => _removeLabel(label),
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  )
+                : const SizedBox.shrink(),
             TextFormField(
               decoration: const InputDecoration(
                   labelText: 'Cost',

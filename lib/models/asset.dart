@@ -5,6 +5,7 @@ class Asset {
   final String? purchaseDate;
   final double cost;
   final String? photoPath;
+  final List<String>? labels;
 
   Asset({
     this.id,
@@ -13,6 +14,7 @@ class Asset {
     this.purchaseDate,
     required this.cost,
     this.photoPath,
+    this.labels,
   });
 
   factory Asset.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Asset {
       purchaseDate: json['purchaseDate'] ?? '',
       cost: (json['cost'] ?? 0).toDouble(),
       photoPath: json['photoPath'],
+      labels: json['labels'],
     );
   }
 
@@ -34,6 +37,7 @@ class Asset {
       'purchase_date': purchaseDate,
       'cost': cost,
       'photo_path': photoPath,
+      'labels': labels,
     };
   }
 }
