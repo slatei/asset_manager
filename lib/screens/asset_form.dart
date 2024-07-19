@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:asset_store/models/asset.dart';
+import 'package:asset_store/models/asset_orig.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AssetForm extends StatefulWidget {
-  final FutureOr<void> Function(Asset asset,
+  final FutureOr<void> Function(AssetOriginal asset,
       {File? imageFile, Uint8List? imageBytes}) addAsset;
   final ImagePicker imagePicker;
 
@@ -75,7 +75,7 @@ class _AssetFormState extends State<AssetForm> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      final asset = Asset(
+      final asset = AssetOriginal(
         name: _name!,
         category: _category!,
         purchaseDate: _purchaseDate?.toIso8601String(),

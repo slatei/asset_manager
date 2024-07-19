@@ -1,11 +1,17 @@
+import 'package:asset_store/shared/styled_text.dart';
 import 'package:flutter/material.dart';
 
 class AssetHeader extends StatelessWidget {
-  const AssetHeader({required this.label, required this.labelIcon, required this.value, super.key});
+  const AssetHeader({
+    required this.label,
+    required this.labelIcon,
+    required this.price,
+    super.key,
+  });
 
   final String label;
   final IconData labelIcon;
-  final double value;
+  final double price;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +66,7 @@ class AssetHeader extends StatelessWidget {
                     'Total Price',
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
-                  Text("\$${value.toStringAsFixed(2)}"),
+                  StyledPrice(price),
                 ],
               ),
             ],

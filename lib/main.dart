@@ -1,5 +1,4 @@
-import 'package:asset_store/models/asset/category.dart';
-import 'package:asset_store/screens/lists/asset_header.dart';
+import 'package:asset_store/screens/assets_list.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:asset_store/screens/auth.dart';
 import 'package:asset_store/screens/dashboard.dart';
-import 'package:asset_store/services/api_service.dart';
 import 'package:asset_store/state/asset_state.dart';
 import 'package:asset_store/state/auth_state.dart';
 
@@ -43,7 +41,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ApiService()),
         ChangeNotifierProvider(
             create: (context) => AuthState(auth: FirebaseAuth.instance)),
         ChangeNotifierProvider(
@@ -98,10 +95,6 @@ class Sandbox extends StatelessWidget {
           title: const Text('Sandbox'),
           backgroundColor: Colors.grey,
         ),
-        body: AssetHeader(
-          label: DefaultCategories.clothing.category.name,
-          labelIcon: DefaultCategories.clothing.category.icon!,
-          value: 10.231,
-        ));
+        body: const AssetsList());
   }
 }
