@@ -17,7 +17,7 @@ class AssetListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 8, bottom: 8),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(8.0),

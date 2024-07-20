@@ -11,6 +11,7 @@
         "cupertino",
         "firestore",
         "flutterfire",
+        "LTRB",
         "Schyler",
         "sqflite"
     ],
