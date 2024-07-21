@@ -3,10 +3,9 @@ import 'package:asset_store/models/asset/category.dart';
 import 'package:asset_store/models/asset/purchase.dart';
 import 'package:asset_store/screens/asset_lists/asset_header.dart';
 import 'package:asset_store/screens/asset_lists/asset_list_item.dart';
-import 'package:asset_store/shared/styled_bottom_app_bar_mixin.dart';
+import 'package:asset_store/shared/bottom_bar_mixin.dart';
 import 'package:asset_store/shared/styled_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class AssetsList extends StatefulWidget {
   const AssetsList({super.key});
@@ -15,7 +14,7 @@ class AssetsList extends StatefulWidget {
   State<AssetsList> createState() => _AssetsListState();
 }
 
-class _AssetsListState extends State<AssetsList> with StyledBottomAppBarMixin {
+class _AssetsListState extends State<AssetsList> with BottomAppBarMixin {
   static List<Asset> assetsList = <Asset>[
     Asset(
       id: '1',
@@ -108,44 +107,6 @@ class _AssetsListState extends State<AssetsList> with StyledBottomAppBarMixin {
     ),
   ];
 
-  late ScrollController _controller;
-  bool _isVisible = true;
-
-  FloatingActionButtonLocation get _fabLocation => _isVisible
-      ? FloatingActionButtonLocation.endContained
-      : FloatingActionButtonLocation.endFloat;
-
-  void _listen() {
-    switch (_controller.position.userScrollDirection) {
-      case ScrollDirection.idle:
-        break;
-      case ScrollDirection.forward:
-        _show();
-      case ScrollDirection.reverse:
-        _hide();
-    }
-  }
-
-  void _show() {
-    if (!_isVisible) {
-      setState(() => _isVisible = true);
-    }
-  }
-
-  void _hide() {
-    if (_isVisible) {
-      setState(() => _isVisible = false);
-    }
-  }
-
-  @override
-  void initState() {
-    _controller = ScrollController();
-    _controller.addListener(_listen);
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,12 +120,12 @@ class _AssetsListState extends State<AssetsList> with StyledBottomAppBarMixin {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         tooltip: 'Add New Item',
-        elevation: _isVisible ? 0.0 : null,
+        elevation: appBarIsVisible ? 0.0 : null,
         child: const Icon(Icons.add),
       ),
-      floatingActionButtonLocation: _fabLocation,
+      floatingActionButtonLocation: appBarFabLocation,
       bottomNavigationBar: StyledBottomAppBar(
-        isVisible: _isVisible,
+        isVisible: appBarIsVisible,
       ),
 
       // main view window and assets list
@@ -190,7 +151,7 @@ class _AssetsListState extends State<AssetsList> with StyledBottomAppBarMixin {
             // Assets List
             Expanded(
               child: ListView(
-                controller: _controller,
+                controller: appBarController,
                 children: assetsList.map((asset) {
                   return AssetListItem(
                     name: asset.name,
