@@ -13,7 +13,8 @@
         "flutterfire",
         "LTRB",
         "Schyler",
-        "sqflite"
+        "sqflite",
+        "vsync"
     ],
     "ignoreWords": [],
     "import": []

@@ -1,0 +1,49 @@
+{
+  "assets": [
+    {
+      "id": "unique-asset-id",
+      "name": "string",
+      "category": "string",
+      "purchase": {
+        "price": "number",
+        "date": "date",
+        "location": "string"
+      },
+      "images": [
+        {
+          "image_url": "string"
+        }
+      ],
+      "notes": "string",
+      "tags": ["string"],
+      "location_info": {
+        "location": "string",
+        "room": "string"
+      },
+      "valuation_info": {
+        "current_value": "number",
+        "depreciation_rate": "number",
+        "depreciated_value": "number"
+      },
+      "identification_info": {
+        "serial_number": "string",
+        "model_number": "string",
+        "manufacturer": "string"
+      },
+      "insurance_info": {
+        "insured": "boolean",
+        "insurance_policy_number": "string",
+        "insurance_value": "number"
+      },
+      "maintenance_info": {
+        "maintenance_schedule": "string",
+        "last_maintenance_date": "date",
+        "maintenance_notes": "string"
+      },
+      "warranty_info": {
+        "warranty_period": "string",
+        "warranty_expiry_date": "date"
+      }
+    }
+  ]
+}

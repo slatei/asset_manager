@@ -1,4 +1,5 @@
 import 'package:asset_store/screens/asset_lists/assets_list.dart';
+import 'package:asset_store/screens/asset_management/create_asset.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -63,7 +64,7 @@ class App extends StatelessWidget {
         initialRoute: '/',
         routes: {
           // '/': (context) => const AuthWrapper(),
-          '/': (context) => const AssetsList(),
+          '/': (context) => const CreateAsset(),
           '/dashboard': (context) => const Dashboard(),
         },
       ),
