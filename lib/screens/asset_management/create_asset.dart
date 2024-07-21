@@ -1,3 +1,4 @@
+import 'package:asset_store/screens/asset_management/asset_buttons.dart';
 import 'package:asset_store/screens/asset_management/create_asset_detail.dart';
 import 'package:asset_store/screens/asset_management/create_asset_image.dart';
 import 'package:flutter/material.dart';
@@ -49,11 +50,24 @@ class _CreateAssetState extends State<CreateAsset>
           }).toList(),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: tabsMap.values.map((value) {
-          return value;
-        }).toList(),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: tabsMap.values.map((value) {
+                  return value;
+                }).toList(),
+              ),
+            ),
+            AssetButtons(
+              tabController: _tabController,
+              add: () {},
+            )
+          ],
+        ),
       ),
     );
   }
