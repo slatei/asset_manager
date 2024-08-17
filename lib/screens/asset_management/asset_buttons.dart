@@ -36,28 +36,31 @@ class _AssetButtonsState extends State<AssetButtons> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        OutlinedButton(
-          onPressed: _tabController.index != 0
-              ? () => _tabController.animateTo(_tabController.index - 1)
-              : null,
-          child: const Text('Back'),
-        ),
-        const SizedBox(width: 10),
-        OutlinedButton(
-          onPressed: _tabController.index < _tabController.length - 1
-              ? () => _tabController.animateTo(_tabController.index + 1)
-              : null,
-          child: const Text('Next'),
-        ),
-        const Expanded(child: SizedBox()),
-        FilledButton.icon(
-          onPressed: widget.add,
-          icon: const Icon(Icons.add, size: 18),
-          label: const Text('Add'),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          OutlinedButton(
+            onPressed: _tabController.index != 0
+                ? () => _tabController.animateTo(_tabController.index - 1)
+                : null,
+            child: const Text('Back'),
+          ),
+          const SizedBox(width: 10),
+          OutlinedButton(
+            onPressed: _tabController.index < _tabController.length - 1
+                ? () => _tabController.animateTo(_tabController.index + 1)
+                : null,
+            child: const Text('Next'),
+          ),
+          const Expanded(child: SizedBox()),
+          FilledButton.icon(
+            onPressed: widget.add,
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Add'),
+          ),
+        ],
+      ),
     );
   }
 }

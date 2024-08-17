@@ -10,6 +10,14 @@
     - [Updated `NestedScrollViewExample` Code](#updated-nestedscrollviewexample-code)
     - [Explanation](#explanation)
     - [Summary](#summary)
+  - [Tab Controller Context and Builder](#tab-controller-context-and-builder)
+    - [Updated `NestedScrollViewExample` Code](#updated-nestedscrollviewexample-code-1)
+    - [Key Changes](#key-changes)
+    - [Summary](#summary-1)
+    - [Accessing TabController Context](#accessing-tabcontroller-context)
+    - [Solution 1: Use the `DefaultTabController` Directly](#solution-1-use-the-defaulttabcontroller-directly)
+    - [Explanation](#explanation-1)
+    - [Summary](#summary-2)
 
 ## Understanding NestedScrollView
 
@@ -555,3 +563,319 @@ class NestedScrollViewExample extends StatelessWidget {
 ### Summary
 
 Now, the "Details" tab content is neatly separated into its own widget, making the code more modular and easier to maintain. This separation allows you to manage the details form in isolation, which is particularly beneficial as your app scales and becomes more complex.
+
+## Tab Controller Context and Builder
+
+---
+
+> Now, at the bottom of each of the tabs, I would like a collection of bottom navigation buttons, coupled with a "+ Add" button, which will take the contents of all the forms in all of the tabs, and perform an action (such as creating the asset in a database)
+>
+> Currently I have a widget in a file called `asset_buttons.dart`.
+>
+> I would like the `AssetButtons` widget to always be at the bottom of the page
+
+---
+
+To ensure that the `AssetButtons` widget is always at the bottom of the page, regardless of the content in the tabs, you can use a `Column` in the `TabBarView` to stack the content and the `AssetButtons` at the bottom. The `Column` allows you to use the `Expanded` widget to make the scrollable content take up the available space, ensuring the `AssetButtons` widget is positioned at the bottom.
+
+### Updated `NestedScrollViewExample` Code
+
+```dart
+import 'package:flutter/material.dart';
+import 'create_asset_detail.dart';
+import 'asset_buttons.dart';
+
+void main() => runApp(const NestedScrollViewExampleApp());
+
+class NestedScrollViewExampleApp extends StatelessWidget {
+  const NestedScrollViewExampleApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: NestedScrollViewExample(),
+    );
+  }
+}
+
+class NestedScrollViewExample extends StatelessWidget {
+  const NestedScrollViewExample({super.key});
+
+  void _addAsset() {
+    // Logic to add the asset, such as saving to a database
+    print('Asset added');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> tabs = <String>['Details', 'Upload Images'];
+
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  title: const Text('Asset Management'),
+                  pinned: true,
+                  expandedHeight: 150.0,
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                    tabs: tabs.map((String name) => Tab(text: name)).toList(),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: Column(
+            children: [
+              Expanded(
+                child: TabBarView(
+                  children: tabs.map((String name) {
+                    return SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: Builder(
+                        builder: (BuildContext context) {
+                          return CustomScrollView(
+                            key: PageStorageKey<String>(name),
+                            slivers: <Widget>[
+                              SliverOverlapInjector(
+                                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                              ),
+                              SliverPadding(
+                                padding: const EdgeInsets.all(8.0),
+                                sliver: SliverList(
+                                  delegate: SliverChildListDelegate(
+                                    _buildTabContent(name, context),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              AssetButtons(
+                tabController: DefaultTabController.of(context)!,
+                add: _addAsset,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildTabContent(String tabName, BuildContext context) {
+    if (tabName == 'Details') {
+      return <Widget>[
+        const CreateAssetDetail(),
+      ];
+    } else if (tabName == 'Upload Images') {
+      return <Widget>[
+        ElevatedButton(
+          onPressed: () {
+            // Code to upload image
+          },
+          child: const Text('Upload Image'),
+        ),
+        // Add more widgets for image upload if necessary
+      ];
+    }
+    return <Widget>[];
+  }
+}
+```
+
+### Key Changes
+
+1. **Column Layout**:
+
+   - The `Column` widget is used in the `TabBarView` to ensure the layout consists of two parts:
+     - **Expanded**: Contains the scrollable content (the tab content).
+     - **AssetButtons**: Positioned at the bottom of the `Column`.
+
+2. **Expanded Widget**:
+
+   - The `Expanded` widget wraps the `CustomScrollView`, ensuring it takes up the available space above the `AssetButtons`.
+
+3. **AssetButtons**:
+
+   - This widget is added below the `Expanded` widget in the `Column`. It receives the `TabController` and the `add` function, which performs the asset creation action when the "Add" button is pressed.
+
+4. **\_addAsset Function**:
+   - The `_addAsset` function contains the logic for what happens when the "Add" button is pressed. Currently, it simply prints to the console, but you can replace this with your actual logic for adding an asset to a database or performing other actions.
+
+### Summary
+
+With these changes, the `AssetButtons` widget will always be visible at the bottom of each tab, and the tab content will be scrollable above it. This ensures that users can navigate between tabs using the "Back" and "Next" buttons and can add the asset with the "+ Add" button, regardless of the content's length in each tab.
+
+### Accessing TabController Context
+
+---
+
+> The following assertion was thrown building CreateAsset(dirty):
+> DefaultTabController.of() was called with a context that does not > contain a DefaultTabController widget.
+> No DefaultTabController widget ancestor could be found starting from the > context that was passed to DefaultTabController.of(). This can happen > because you are using a widget that looks for a DefaultTabController > ancestor, but no such ancestor exists.
+> The context used was:
+> CreateAsset(dirty)
+
+---
+
+Given that the AssetButtons widget is the only one needing the TabController, you're correct that there's no need to pass the TabController to CreateAssetDetail. However, the error is raised because AssetButtons tries to access the TabController using DefaultTabController.of(context) within a context where the DefaultTabController might not be present.
+
+This issue can be resolved by ensuring that the AssetButtons widget is in a context where DefaultTabController is accessible. To fix this, we need to be careful about how the widget tree is structured so that when AssetButtons accesses DefaultTabController.of(context), it does so within a context that is inside the DefaultTabController.
+
+The error you're encountering is caused by the fact that `DefaultTabController.of(context)` is being called in a context where the `DefaultTabController` has not been fully established yet. This is typically because `AssetButtons` is being accessed or built before the `DefaultTabController` is correctly in place.
+
+To resolve this issue, there are a couple of approaches you can take:
+
+### Solution 1: Use the `DefaultTabController` Directly
+
+Instead of relying on `DefaultTabController.of(context)` within the `AssetButtons` widget, you can pass the `TabController` directly to the widget when you create it, ensuring that the `TabController` is properly available at the time of creation.
+
+```dart
+import 'package:flutter/material.dart';
+import 'create_asset_detail.dart';
+import 'asset_buttons.dart';
+
+void main() => runApp(const NestedScrollViewExampleApp());
+
+class NestedScrollViewExampleApp extends StatelessWidget {
+  const NestedScrollViewExampleApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: NestedScrollViewExample(),
+    );
+  }
+}
+
+class NestedScrollViewExample extends StatelessWidget {
+  const NestedScrollViewExample({super.key});
+
+  void _addAsset() {
+    // Logic to add the asset, such as saving to a database
+    print('Asset added');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> tabs = <String>['Details', 'Upload Images'];
+
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        body: Builder(
+          builder: (BuildContext context) {
+            final TabController tabController =
+                DefaultTabController.of(context)!;
+            return NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: SliverAppBar(
+                      title: const Text('Asset Management'),
+                      pinned: true,
+                      expandedHeight: 150.0,
+                      forceElevated: innerBoxIsScrolled,
+                      bottom: TabBar(
+                        controller: tabController,
+                        tabs:
+                            tabs.map((String name) => Tab(text: name)).toList(),
+                      ),
+                    ),
+                  ),
+                ];
+              },
+              body: Column(
+                children: [
+                  Expanded(
+                    child: TabBarView(
+                      controller: tabController,
+                      children: tabs.map((String name) {
+                        return SafeArea(
+                          top: false,
+                          bottom: false,
+                          child: Builder(
+                            builder: (BuildContext context) {
+                              return CustomScrollView(
+                                key: PageStorageKey<String>(name),
+                                slivers: <Widget>[
+                                  SliverOverlapInjector(
+                                    handle: NestedScrollView
+                                        .sliverOverlapAbsorberHandleFor(
+                                            context),
+                                  ),
+                                  SliverPadding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    sliver: SliverList(
+                                      delegate: SliverChildListDelegate(
+                                        _buildTabContent(name, context),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  AssetButtons(
+                    tabController: tabController,
+                    add: _addAsset,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildTabContent(String tabName, BuildContext context) {
+    if (tabName == 'Details') {
+      return <Widget>[
+        const CreateAssetDetail(),
+      ];
+    } else if (tabName == 'Upload Images') {
+      return <Widget>[
+        ElevatedButton(
+          onPressed: () {
+            // Code to upload image
+          },
+          child: const Text('Upload Image'),
+        ),
+        // Add more widgets for image upload if necessary
+      ];
+    }
+    return <Widget>[];
+  }
+}
+```
+
+### Explanation
+
+- **Using a `Builder` Widget:**
+  - We wrapped the `NestedScrollView` inside a `Builder` widget, which ensures that when the `AssetButtons` is created, the `DefaultTabController` is already in place.
+- **Directly Passing `TabController`:**
+  - We obtain the `TabController` using `DefaultTabController.of(context)!` and pass it directly to `AssetButtons` and `TabBarView`.
+
+### Summary
+
+This approach guarantees that the `TabController` is correctly initialized and passed down to the necessary widgets, resolving the issue where the `AssetButtons` widget attempts to access the `DefaultTabController` before it is established in the widget tree.

@@ -1,13 +1,9 @@
-import 'package:asset_store/screens/asset_management/asset_buttons.dart';
 import 'package:flutter/material.dart';
 
 class CreateAssetDetail extends StatefulWidget {
   const CreateAssetDetail({
-    required this.tabController,
     super.key,
   });
-
-  final TabController tabController;
 
   @override
   State<CreateAssetDetail> createState() => _CreateAssetDetailState();
@@ -40,6 +36,7 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
           child: Column(
             children: [
               // Asset name
+              const SizedBox(height: 20),
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -48,7 +45,7 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
               // Asset category
               TextField(
@@ -59,7 +56,7 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
               // Asset date
               const TextField(
@@ -69,7 +66,7 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
               // Asset price
               const TextField(
@@ -79,7 +76,7 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -106,12 +103,15 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
 
         const Placeholder(child: SizedBox(height: 40)),
         const SizedBox(height: 20),
-        const Placeholder(child: SizedBox(height: 300)),
-
-        AssetButtons(
-          tabController: widget.tabController,
-          add: () {},
-        ),
+        const Placeholder(child: SizedBox(height: 100)),
+        const SizedBox(height: 20),
+        const Placeholder(child: SizedBox(height: 100)),
+        const SizedBox(height: 20),
+        const Placeholder(child: SizedBox(height: 100)),
+        const SizedBox(height: 20),
+        const Placeholder(child: SizedBox(height: 100)),
+        const SizedBox(height: 20),
+        const Placeholder(child: SizedBox(height: 100)),
       ],
     );
   }
