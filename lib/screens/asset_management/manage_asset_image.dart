@@ -1,15 +1,16 @@
+import 'package:asset_store/screens/asset_management/manage_asset_labels.dart';
 import 'package:flutter/material.dart';
 
-class CreateAssetImage extends StatefulWidget {
-  const CreateAssetImage({
+class ManageAssetImage extends StatefulWidget {
+  const ManageAssetImage({
     super.key,
   });
 
   @override
-  State<CreateAssetImage> createState() => _CreateAssetImageState();
+  State<ManageAssetImage> createState() => _ManageAssetImageState();
 }
 
-class _CreateAssetImageState extends State<CreateAssetImage>
+class _ManageAssetImageState extends State<ManageAssetImage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;

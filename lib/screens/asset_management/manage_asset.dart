@@ -1,6 +1,6 @@
 import 'package:asset_store/screens/asset_management/asset_buttons.dart';
-import 'package:asset_store/screens/asset_management/create_asset_detail.dart';
-import 'package:asset_store/screens/asset_management/create_asset_image.dart';
+import 'package:asset_store/screens/asset_management/manage_asset_detail.dart';
+import 'package:asset_store/screens/asset_management/manage_asset_image.dart';
 import 'package:flutter/material.dart';
 
 class TabName {
@@ -8,8 +8,8 @@ class TabName {
   static const String images = 'Images';
 }
 
-class CreateAsset extends StatelessWidget {
-  const CreateAsset({super.key});
+class ManageAsset extends StatelessWidget {
+  const ManageAsset({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +92,11 @@ class CreateAsset extends StatelessWidget {
   List<Widget> _buildTabContent(String tabName, BuildContext context) {
     if (tabName == TabName.details) {
       return <Widget>[
-        const CreateAssetDetail(),
+        const ManageAssetDetail(),
       ];
     } else if (tabName == TabName.images) {
       return <Widget>[
-        const CreateAssetImage(),
+        const ManageAssetImage(),
       ];
     }
     return <Widget>[];

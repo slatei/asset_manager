@@ -1,21 +1,29 @@
+import 'package:asset_store/screens/asset_management/manage_asset_labels.dart';
 import 'package:flutter/material.dart';
 
-class CreateAssetDetail extends StatefulWidget {
-  const CreateAssetDetail({
+class ManageAssetDetail extends StatefulWidget {
+  const ManageAssetDetail({
     super.key,
   });
 
   @override
-  State<CreateAssetDetail> createState() => _CreateAssetDetailState();
+  State<ManageAssetDetail> createState() => _ManageAssetDetailState();
 }
 
-class _CreateAssetDetailState extends State<CreateAssetDetail>
+class _ManageAssetDetailState extends State<ManageAssetDetail>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();
+
+  List<String> labels = ['Flutter', 'Dart'];
+  void _updateLabels(List<String> updatedLabels) {
+    setState(() {
+      labels = updatedLabels;
+    });
+  }
 
   @override
   void dispose() {
@@ -81,37 +89,20 @@ class _CreateAssetDetailState extends State<CreateAssetDetail>
           ),
         ),
 
-        // Separator bar
-        const Padding(
-          padding: EdgeInsets.all(10),
-          child: Divider(
-            indent: 20,
-            endIndent: 20,
-          ),
+        const Divider(
+          indent: 20,
+          endIndent: 20,
         ),
 
-        const Text('Labels'),
-
-        // Separator bar
-        const Padding(
-          padding: EdgeInsets.all(10),
-          child: Divider(
-            indent: 20,
-            endIndent: 20,
-          ),
+        ManageAssetLabels(
+          labels: labels,
+          onLabelsChanged: _updateLabels,
         ),
 
-        const Placeholder(child: SizedBox(height: 40)),
-        const SizedBox(height: 20),
-        const Placeholder(child: SizedBox(height: 100)),
-        const SizedBox(height: 20),
-        const Placeholder(child: SizedBox(height: 100)),
-        const SizedBox(height: 20),
-        const Placeholder(child: SizedBox(height: 100)),
-        const SizedBox(height: 20),
-        const Placeholder(child: SizedBox(height: 100)),
-        const SizedBox(height: 20),
-        const Placeholder(child: SizedBox(height: 100)),
+        const Divider(
+          indent: 20,
+          endIndent: 20,
+        )
       ],
     );
   }
