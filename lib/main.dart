@@ -1,4 +1,3 @@
-import 'package:asset_store/screens/asset_lists/assets_list.dart';
 import 'package:asset_store/screens/asset_management/create_asset.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +63,8 @@ class App extends StatelessWidget {
         initialRoute: '/',
         routes: {
           // '/': (context) => const AuthWrapper(),
-          '/': (context) => const CreateAsset(),
+          // '/': (context) => const NestedScrollViewExample(),
+          '/': (context) => const Sandbox(),
           '/dashboard': (context) => const Dashboard(),
         },
       ),
@@ -96,7 +96,7 @@ class Sandbox extends StatelessWidget {
         title: const Text('Sandbox'),
         backgroundColor: Colors.grey,
       ),
-      body: const AssetsList(),
+      body: const CreateAsset(),
     );
   }
 }
