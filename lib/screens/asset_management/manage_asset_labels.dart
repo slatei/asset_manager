@@ -4,8 +4,11 @@ class ManageAssetLabels extends StatefulWidget {
   final List<String> labels;
   final Function(List<String>) onLabelsChanged;
 
-  const ManageAssetLabels(
-      {required this.labels, required this.onLabelsChanged, super.key});
+  const ManageAssetLabels({
+    required this.labels,
+    required this.onLabelsChanged,
+    super.key,
+  });
 
   @override
   State<ManageAssetLabels> createState() => _ManageAssetLabelsState();

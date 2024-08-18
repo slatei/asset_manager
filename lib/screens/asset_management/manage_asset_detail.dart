@@ -1,5 +1,7 @@
 import 'package:asset_store/models/asset/asset.dart';
 import 'package:asset_store/models/asset/category.dart';
+import 'package:asset_store/screens/asset_management/category_dropdown.dart';
+import 'package:asset_store/screens/asset_management/date_picker.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_labels.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +27,7 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
   late Asset localAsset;
 
   final _nameController = TextEditingController();
-  final _categoryController = TextEditingController();
+  final _priceController = TextEditingController();
 
   List<String> labels = ['Flutter', 'Dart'];
 
@@ -36,12 +38,9 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
     // Initialize the local asset with the passed-in asset
     localAsset = widget.asset;
 
-    _nameController.text = localAsset.name;
-    _categoryController.text = localAsset.category?.toString() ?? '';
-
     // Add listeners to update the local asset and notify the parent
     _nameController.addListener(_updateName);
-    _categoryController.addListener(_updateCategory);
+    _priceController.addListener(_updatePrice);
   }
 
   void _updateName() {
@@ -51,9 +50,23 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
     widget.onUpdate(localAsset);
   }
 
-  void _updateCategory() {
+  void _updatePrice() {
     setState(() {
-      localAsset.category = AssetCategory(name: _categoryController.text);
+      localAsset.purchase?.price = double.parse(_priceController.text);
+    });
+    widget.onUpdate(localAsset);
+  }
+
+  void _updateCategory(DefaultCategories? selectedCategory) {
+    setState(() {
+      localAsset.category = selectedCategory?.category;
+    });
+    widget.onUpdate(localAsset);
+  }
+
+  void _updateDate(DateTime? dateTime) {
+    setState(() {
+      localAsset.purchase?.date = dateTime;
     });
     widget.onUpdate(localAsset);
   }
@@ -69,7 +82,7 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
   @override
   void dispose() {
     _nameController.dispose();
-    _categoryController.dispose();
+    _priceController.dispose();
     super.dispose();
   }
 
@@ -97,29 +110,19 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
               const SizedBox(height: 20),
 
               // Asset category
-              TextField(
-                controller: _categoryController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.category_rounded),
-                  label: Text('Category'),
-                  border: OutlineInputBorder(),
-                ),
+              CategoryDropdown(
+                onChanged: _updateCategory,
               ),
               const SizedBox(height: 20),
 
               // Asset date
-              const TextField(
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.calendar_month_rounded),
-                  label: Text('Date'),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              AssetDatePicker(onChanged: _updateDate),
               const SizedBox(height: 20),
 
               // Asset price
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: _priceController,
+                decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.attach_money_rounded),
                   label: Text('Price'),
                   border: OutlineInputBorder(),

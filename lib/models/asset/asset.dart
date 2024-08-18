@@ -13,14 +13,13 @@ class Asset {
     List<String>? labels,
     String? notes,
   })  : _id = id,
-        _purchase = purchase,
         _room = room,
         labels = labels ?? [],
         _notes = notes;
 
   String name;
   final String _id;
-  Purchase? _purchase;
+  Purchase? purchase = Purchase();
   AssetCategory? category;
   AssetRoom? _room;
   List<String>? labels;
@@ -32,7 +31,6 @@ class Asset {
 
   // Getters
   String get id => _id;
-  Purchase? get purchase => _purchase;
   AssetRoom? get room => _room;
   String? get notes => _notes;
 
