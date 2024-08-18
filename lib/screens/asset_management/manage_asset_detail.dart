@@ -1,10 +1,17 @@
+import 'package:asset_store/models/asset/asset.dart';
+import 'package:asset_store/models/asset/category.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_labels.dart';
 import 'package:flutter/material.dart';
 
 class ManageAssetDetail extends StatefulWidget {
   const ManageAssetDetail({
+    required this.asset,
+    required this.onUpdate,
     super.key,
   });
+
+  final Asset asset;
+  final void Function(Asset updatedAsset) onUpdate;
 
   @override
   State<ManageAssetDetail> createState() => _ManageAssetDetailState();
@@ -15,14 +22,48 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
   @override
   bool get wantKeepAlive => true;
 
+  late Asset localAsset;
+
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();
 
   List<String> labels = ['Flutter', 'Dart'];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the local asset with the passed-in asset
+    localAsset = widget.asset;
+
+    _nameController.text = localAsset.name;
+    _categoryController.text = localAsset.category?.toString() ?? '';
+
+    // Add listeners to update the local asset and notify the parent
+    _nameController.addListener(_updateName);
+    _categoryController.addListener(_updateCategory);
+  }
+
+  void _updateName() {
+    setState(() {
+      localAsset.name = _nameController.text;
+    });
+    widget.onUpdate(localAsset);
+  }
+
+  void _updateCategory() {
+    setState(() {
+      localAsset.category = AssetCategory(name: _categoryController.text);
+    });
+    widget.onUpdate(localAsset);
+  }
+
   void _updateLabels(List<String> updatedLabels) {
     setState(() {
       labels = updatedLabels;
+      localAsset.labels = updatedLabels;
     });
+    widget.onUpdate(localAsset);
   }
 
   @override
@@ -80,7 +121,7 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
               const TextField(
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.attach_money_rounded),
-                  label: Text('Category'),
+                  label: Text('Price'),
                   border: OutlineInputBorder(),
                 ),
               ),

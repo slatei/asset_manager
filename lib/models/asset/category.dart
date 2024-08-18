@@ -8,6 +8,11 @@ class AssetCategory {
 
   final String name;
   final IconData? icon;
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
 enum DefaultCategories {

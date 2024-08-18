@@ -1,5 +1,4 @@
 import 'package:asset_store/screens/asset_management/manage_asset.dart';
-import 'package:asset_store/screens/asset_management/manage_asset_labels.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';

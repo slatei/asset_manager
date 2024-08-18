@@ -1,15 +1,42 @@
+import 'package:asset_store/models/asset/asset.dart';
 import 'package:asset_store/screens/asset_management/asset_buttons.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_detail.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = const Uuid();
 
 class TabName {
   static const String details = 'Details';
   static const String images = 'Images';
 }
 
-class ManageAsset extends StatelessWidget {
+class ManageAsset extends StatefulWidget {
   const ManageAsset({super.key});
+
+  @override
+  State<ManageAsset> createState() => _ManageAssetState();
+}
+
+class _ManageAssetState extends State<ManageAsset> {
+  late Asset topLevelAsset = Asset(
+    name: '',
+    id: uuid.v4(),
+  );
+
+  void _updateAsset(Asset asset) {
+    setState(() {
+      topLevelAsset = asset;
+    });
+  }
+
+  void _handleSubmit() {
+    if (kDebugMode) {
+      print('Asset added: ${topLevelAsset.toString()}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +106,7 @@ class ManageAsset extends StatelessWidget {
                 // Obtain the tabController initialised using the builder function, and pass it directly to the AssetButtons widget
                 AssetButtons(
                   tabController: tabController,
-                  add: () {},
+                  add: _handleSubmit,
                 ),
               ],
             ),
@@ -92,7 +119,10 @@ class ManageAsset extends StatelessWidget {
   List<Widget> _buildTabContent(String tabName, BuildContext context) {
     if (tabName == TabName.details) {
       return <Widget>[
-        const ManageAssetDetail(),
+        ManageAssetDetail(
+          asset: topLevelAsset,
+          onUpdate: _updateAsset,
+        ),
       ];
     } else if (tabName == TabName.images) {
       return <Widget>[

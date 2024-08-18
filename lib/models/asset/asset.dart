@@ -6,28 +6,46 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Asset {
   Asset({
     required this.name,
-    required this.id,
-    this.purchase,
-    this.category,
-    this.room,
-    this.labels,
-    this.notes,
-  });
+    required String id,
+    Purchase? purchase,
+    AssetCategory? category,
+    AssetRoom? room,
+    List<String>? labels,
+    String? notes,
+  })  : _id = id,
+        _purchase = purchase,
+        _room = room,
+        labels = labels ?? [],
+        _notes = notes;
 
-  final String name;
-  final String id;
-  final Purchase? purchase;
-  final AssetCategory? category;
-  final AssetRoom? room;
-  final List<String>? labels;
-  final String? notes;
+  String name;
+  final String _id;
+  Purchase? _purchase;
+  AssetCategory? category;
+  AssetRoom? _room;
+  List<String>? labels;
+  String? _notes;
 
   final DateTime _createdAt = DateTime.now();
 
   final List<String> _filePaths = [];
 
+  // Getters
+  String get id => _id;
+  Purchase? get purchase => _purchase;
+  AssetRoom? get room => _room;
+  String? get notes => _notes;
+
+  DateTime get createdAt => _createdAt;
+  List<String> get filePaths => List.unmodifiable(_filePaths);
+
   void addFilePath(String path) {
     _filePaths.add(path);
+  }
+
+  @override
+  String toString() {
+    return {'id': _id, ...toFirestore()}.toString();
   }
 
   // List<XFile> getFilesFromStorage() {}
@@ -42,7 +60,7 @@ class Asset {
       "_updatedAt": DateTime.now().toIso8601String(),
       "images": _filePaths.map((path) => path).toList(),
       "notes": notes,
-      "labels": labels?.toList() ?? [],
+      "labels": labels?.toList(),
     };
   }
 
