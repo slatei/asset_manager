@@ -1,7 +1,9 @@
 import 'package:asset_store/models/asset/category.dart';
 import 'package:asset_store/models/asset/purchase.dart';
 import 'package:asset_store/models/asset/room.dart';
+import 'package:asset_store/shared/hashed_file.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Asset {
   Asset({
@@ -26,8 +28,7 @@ class Asset {
   String? _notes;
 
   final DateTime _createdAt = DateTime.now();
-
-  final List<String> _filePaths = [];
+  final List<HashedFile> _files = [];
 
   // Getters
   String get id => _id;
@@ -35,18 +36,28 @@ class Asset {
   String? get notes => _notes;
 
   DateTime get createdAt => _createdAt;
-  List<String> get filePaths => List.unmodifiable(_filePaths);
 
-  void addFilePath(String path) {
-    _filePaths.add(path);
+  List<HashedFile> get files => List.unmodifiable(_files);
+
+  // Setters
+  Future<void> addFile(XFile file) async {
+    final hashedFile = await HashedFile.fromXFile(file);
+
+    // Check if the file is already in the list based on its hash
+    if (!_files.any((existingFile) => existingFile.hash == hashedFile.hash)) {
+      _files.add(hashedFile);
+    }
+  }
+
+  void removeFile(XFile file) async {
+    final hashedFile = await HashedFile.fromXFile(file);
+    _files.removeWhere((existingFile) => existingFile.hash == hashedFile.hash);
   }
 
   @override
   String toString() {
     return {'id': _id, ...toFirestore()}.toString();
   }
-
-  // List<XFile> getFilesFromStorage() {}
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -56,7 +67,7 @@ class Asset {
       "purchase": purchase?.asMap ?? {},
       "_createdAt": _createdAt.toIso8601String(),
       "_updatedAt": DateTime.now().toIso8601String(),
-      "images": _filePaths.map((path) => path).toList(),
+      "images": _files.map((file) => file.path).toList(),
       "notes": notes,
       "labels": labels?.toList(),
     };
@@ -86,19 +97,10 @@ class Asset {
       notes: data['notes'],
     );
 
-    for (String path in data['images']) {
-      asset.addFilePath(path);
-    }
+    // for (String path in data['images']) {
+    //   asset.addFile(path);
+    // }
 
     return asset;
   }
-
-  // static double get totalCost =>
-  //     _assets.fold(0.0, (assetSum, asset) => assetSum + asset.cost);
 }
-
-List<Asset> allAssets = [
-  Asset(name: 'Fridge', id: "1234"),
-  Asset(name: 'Bed', id: "2345"),
-  Asset(name: 'Rug', id: "2345"),
-];

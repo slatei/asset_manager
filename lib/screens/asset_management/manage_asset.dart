@@ -4,6 +4,7 @@ import 'package:asset_store/screens/asset_management/manage_asset_detail.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = const Uuid();
@@ -126,7 +127,11 @@ class _ManageAssetState extends State<ManageAsset> {
       ];
     } else if (tabName == TabName.images) {
       return <Widget>[
-        const ManageAssetImage(),
+        ManageAssetImage(
+          asset: topLevelAsset,
+          onUpdate: _updateAsset,
+          imagePicker: ImagePicker(),
+        ),
       ];
     }
     return <Widget>[];
