@@ -46,6 +46,7 @@ class _DashboardState extends State<Dashboard> {
           return SingleChildScrollView(
             child: Column(
               children: [
+                // Total Assets
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -53,6 +54,7 @@ class _DashboardState extends State<Dashboard> {
                     style: const TextStyle(fontSize: 20),
                   ),
                 ),
+                // Total Cost
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -60,6 +62,7 @@ class _DashboardState extends State<Dashboard> {
                     style: const TextStyle(fontSize: 20),
                   ),
                 ),
+                // Assets List
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

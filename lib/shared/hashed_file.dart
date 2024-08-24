@@ -4,10 +4,12 @@ import 'package:image_picker/image_picker.dart';
 
 class HashedFile extends XFile {
   final String hash;
+  String? url;
 
   HashedFile({
     required String path,
     required this.hash,
+    this.url,
   }) : super(path);
 
   // Factory constructor to create a HashedFile from an XFile

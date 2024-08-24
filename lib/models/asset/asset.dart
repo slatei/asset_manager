@@ -67,7 +67,7 @@ class Asset {
       "purchase": purchase?.asMap ?? {},
       "_createdAt": _createdAt.toIso8601String(),
       "_updatedAt": DateTime.now().toIso8601String(),
-      "images": _files.map((file) => file.path).toList(),
+      "files": _files.map((HashedFile file) => file.url).toList(),
       "notes": notes,
       "labels": labels?.toList(),
     };
@@ -96,10 +96,6 @@ class Asset {
       labels: data['labels'],
       notes: data['notes'],
     );
-
-    // for (String path in data['images']) {
-    //   asset.addFile(path);
-    // }
 
     return asset;
   }

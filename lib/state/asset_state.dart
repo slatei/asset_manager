@@ -33,6 +33,7 @@ class AssetState extends ChangeNotifier {
       {File? imageFile, Uint8List? imageBytes}) async {
     String? photoUrl;
 
+    // Stores the asset image in fire-datastore
     if ((kIsWeb && imageBytes != null) || (!kIsWeb && imageFile != null)) {
       try {
         final ref = storage
@@ -54,6 +55,7 @@ class AssetState extends ChangeNotifier {
       }
     }
 
+    // Add asset to fire-database
     return firestore.collection(assetsCollection).add(<String, dynamic>{
       'name': asset.name,
       'category': asset.category,

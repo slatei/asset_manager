@@ -1,4 +1,5 @@
 import 'package:asset_store/screens/asset_management/manage_asset.dart';
+import 'package:asset_store/services/asset_store.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -11,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:asset_store/screens/auth.dart';
 import 'package:asset_store/screens/dashboard.dart';
-import 'package:asset_store/state/asset_state.dart';
+// import 'package:asset_store/state/asset_state.dart';
 import 'package:asset_store/state/auth_state.dart';
 
 void main() async {
@@ -43,12 +44,13 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => AuthState(auth: FirebaseAuth.instance)),
-        ChangeNotifierProvider(
-            create: (context) => AssetState(
-                  firestore: FirebaseFirestore.instance,
-                  auth: FirebaseAuth.instance,
-                  storage: FirebaseStorage.instance,
-                )),
+        // ChangeNotifierProvider(
+        //     create: (context) => AssetState(
+        //           firestore: FirebaseFirestore.instance,
+        //           auth: FirebaseAuth.instance,
+        //           storage: FirebaseStorage.instance,
+        //         )),
+        ChangeNotifierProvider(create: (context) => AssetStore()),
         ChangeNotifierProvider(
             create: (context) => CategoriesState(
                   firestore: FirebaseFirestore.instance,

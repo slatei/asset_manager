@@ -2,9 +2,11 @@ import 'package:asset_store/models/asset/asset.dart';
 import 'package:asset_store/screens/asset_management/asset_buttons.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_detail.dart';
 import 'package:asset_store/screens/asset_management/manage_asset_image.dart';
+import 'package:asset_store/services/asset_store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = const Uuid();
@@ -37,6 +39,14 @@ class _ManageAssetState extends State<ManageAsset> {
     if (kDebugMode) {
       print('Asset added: ${topLevelAsset.toString()}');
     }
+
+    Provider.of<AssetStore>(context, listen: false).addAsset(topLevelAsset);
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Asset was saved'),
+      showCloseIcon: true,
+      duration: Duration(seconds: 2),
+    ));
   }
 
   @override
