@@ -10,14 +10,31 @@ class FirebaseStorageService {
       try {
         for (HashedFile file in asset.files) {
           final ref =
-              FirebaseStorage.instance.ref().child('assets').child(file.name);
+              FirebaseStorage.instance.ref().child('assets').child(file.hash);
 
-          if (kIsWeb) {
-            await ref.putData(await file.readAsBytes());
-          } else {
-            await ref.putFile(File(file.path));
+          // Check if the file already exists
+          String? existingUrl;
+          try {
+            existingUrl = await ref.getDownloadURL();
+          } catch (e) {
+            if (e is FirebaseException && e.code == 'object-not-found') {
+              existingUrl = null;
+            } else {
+              rethrow;
+            }
           }
-          file.url = await ref.getDownloadURL();
+
+          if (existingUrl != null) {
+            file.url = existingUrl; // Use existing URL
+          } else {
+            // Upload new file
+            if (kIsWeb) {
+              await ref.putData(await file.readAsBytes());
+            } else {
+              await ref.putFile(File(file.path));
+            }
+            file.url = await ref.getDownloadURL();
+          }
         }
       } on FirebaseException catch (e) {
         if (kDebugMode) {
