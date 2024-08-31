@@ -1,4 +1,4 @@
-import 'package:asset_store/screens/asset_management/manage_asset.dart';
+import 'package:asset_store/screens/asset_lists/assets_list.dart';
 import 'package:asset_store/services/asset_store.dart';
 import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:asset_store/screens/auth.dart';
-import 'package:asset_store/screens/dashboard.dart';
-// import 'package:asset_store/state/asset_state.dart';
 import 'package:asset_store/state/auth_state.dart';
 
 void main() async {
@@ -44,12 +42,6 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
             create: (context) => AuthState(auth: FirebaseAuth.instance)),
-        // ChangeNotifierProvider(
-        //     create: (context) => AssetState(
-        //           firestore: FirebaseFirestore.instance,
-        //           auth: FirebaseAuth.instance,
-        //           storage: FirebaseStorage.instance,
-        //         )),
         ChangeNotifierProvider(create: (context) => AssetStore()),
         ChangeNotifierProvider(
             create: (context) => CategoriesState(
@@ -65,9 +57,7 @@ class App extends StatelessWidget {
         initialRoute: '/',
         routes: {
           // '/': (context) => const AuthWrapper(),
-          // '/': (context) => const NestedScrollViewExample(),
           '/': (context) => const Sandbox(),
-          '/dashboard': (context) => const Dashboard(),
         },
       ),
     );
@@ -83,7 +73,7 @@ class AuthWrapper extends StatelessWidget {
     if (authState.user == null) {
       return const AuthScreen();
     } else {
-      return const Dashboard();
+      return const AssetsList();
     }
   }
 }
@@ -98,7 +88,7 @@ class Sandbox extends StatelessWidget {
         title: const Text('Sandbox'),
         backgroundColor: Colors.grey,
       ),
-      body: const ManageAsset(),
+      body: const AssetsList(),
     );
   }
 }

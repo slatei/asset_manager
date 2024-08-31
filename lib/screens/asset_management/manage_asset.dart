@@ -47,6 +47,8 @@ class _ManageAssetState extends State<ManageAsset> {
       showCloseIcon: true,
       duration: Duration(seconds: 2),
     ));
+
+    Navigator.of(context).pop();
   }
 
   @override

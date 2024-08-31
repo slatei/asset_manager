@@ -1,11 +1,13 @@
-import 'package:asset_store/models/asset/asset.dart';
 import 'package:asset_store/models/asset/category.dart';
-import 'package:asset_store/models/asset/purchase.dart';
 import 'package:asset_store/screens/asset_lists/asset_header.dart';
 import 'package:asset_store/screens/asset_lists/asset_list_item.dart';
+import 'package:asset_store/screens/asset_management/manage_asset.dart';
+import 'package:asset_store/services/asset_store.dart';
 import 'package:asset_store/shared/bottom_bar_mixin.dart';
 import 'package:asset_store/shared/styled_bottom_bar.dart';
+import 'package:asset_store/state/auth_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AssetsList extends StatefulWidget {
   const AssetsList({super.key});
@@ -15,110 +17,49 @@ class AssetsList extends StatefulWidget {
 }
 
 class _AssetsListState extends State<AssetsList> with BottomAppBarMixin {
-  static List<Asset> assetsList = <Asset>[
-    Asset(
-      id: '1',
-      name: 'Guitar',
-      purchase: Purchase(
-        price: 12332.3432,
-        date: DateTime(2022, 1, 1),
-      ),
-      category: DefaultCategories.music.category,
-    ),
-    Asset(
-      id: '2',
-      name: 'Camera',
-      purchase: Purchase(
-        price: 840.98,
-        date: DateTime(2022, 3),
-      ),
-    ),
-    Asset(
-      id: '3',
-      name: 'Easel',
-      purchase: Purchase(
-        price: 132.22,
-        date: DateTime(2022),
-      ),
-      category: DefaultCategories.art.category,
-    ),
-    Asset(
-      id: '4',
-      name: 'Clothes Rack',
-      purchase: Purchase(
-        price: 28.00,
-        date: DateTime(2023),
-      ),
-      category: DefaultCategories.clothing.category,
-    ),
-    Asset(
-      id: '5',
-      name: 'Cat Bed',
-      purchase: Purchase(
-        price: 12.13,
-        date: DateTime(2023, 11, 4),
-      ),
-      category: DefaultCategories.pets.category,
-    ),
-    Asset(
-      id: '6',
-      name: 'Rug',
-      purchase: Purchase(
-        price: 358.99,
-        date: DateTime(2024),
-      ),
-      category: DefaultCategories.fixture.category,
-    ),
-    Asset(
-      id: '7',
-      name: 'Couch',
-      purchase: Purchase(
-        price: 0.0,
-        date: DateTime(2013),
-      ),
-      category: DefaultCategories.furniture.category,
-    ),
-    Asset(
-      id: '8',
-      name: 'Cat Tower',
-      purchase: Purchase(
-        price: 240.00,
-        date: DateTime(2024, 1, 3),
-      ),
-      category: DefaultCategories.pets.category,
-    ),
-    Asset(
-      id: '9',
-      name: 'TV',
-      purchase: Purchase(
-        price: 899.99,
-        date: DateTime(2023),
-      ),
-      category: DefaultCategories.electronics.category,
-    ),
-    Asset(
-      id: '10',
-      name: 'Pillows',
-      purchase: Purchase(
-        price: 38.80,
-        date: DateTime(2024, 2, 2),
-      ),
-      category: DefaultCategories.furniture.category,
-    ),
-  ];
+  @override
+  void initState() {
+    Provider.of<AssetStore>(
+      context,
+      listen: false,
+    ).fetchAssetsOnce();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authState = Provider.of<AuthState>(context);
+
     return Scaffold(
       // Top app bar and title
       appBar: AppBar(
         title: const Text('Assets List'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              authState.signOut(() {
+                if (mounted) {
+                  Navigator.of(context).pushReplacementNamed('/');
+                }
+              });
+            },
+          ),
+        ],
       ),
 
       // Bottom App Bar and add-asset button
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ManageAsset(),
+            ),
+          );
+        },
         tooltip: 'Add New Item',
         elevation: appBarIsVisible ? 0.0 : null,
         child: const Icon(Icons.add),
@@ -150,19 +91,16 @@ class _AssetsListState extends State<AssetsList> with BottomAppBarMixin {
 
             // Assets List
             Expanded(
-              child: ListView(
-                controller: appBarController,
-                children: assetsList.map((asset) {
-                  return AssetListItem(
-                    name: asset.name,
-                    icon: asset.category?.icon != null
-                        ? asset.category!.icon!
-                        : Icons.question_mark_rounded,
-                    date: asset.purchase?.date,
-                    price: asset.purchase?.price,
-                  );
-                }).toList(),
-              ),
+              child: Consumer<AssetStore>(builder: (context, value, child) {
+                return ListView.builder(
+                  itemCount: value.assets.length,
+                  itemBuilder: (_, index) {
+                    return AssetListItem(
+                      asset: value.assets[index],
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),

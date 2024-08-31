@@ -1,18 +1,14 @@
+import 'package:asset_store/models/asset/asset.dart';
 import 'package:asset_store/shared/styled_text.dart';
 import 'package:flutter/material.dart';
 
 class AssetListItem extends StatelessWidget {
-  const AssetListItem(
-      {required this.icon,
-      required this.name,
-      this.date,
-      this.price,
-      super.key});
+  const AssetListItem({
+    required this.asset,
+    super.key,
+  });
 
-  final IconData icon;
-  final String name;
-  final DateTime? date;
-  final double? price;
+  final Asset asset;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +20,11 @@ class AssetListItem extends StatelessWidget {
         child: Row(
           children: [
             // Icon
-            Icon(icon),
+            Icon(
+              asset.category?.icon != null
+                  ? asset.category!.icon!
+                  : Icons.question_mark_rounded,
+            ),
 
             const SizedBox(width: 16),
 
@@ -33,19 +33,20 @@ class AssetListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  asset.name,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                if (date != null) StyledDate(date!)
+                if (asset.purchase?.date != null)
+                  StyledDate(asset.purchase!.date!)
               ],
             ),
 
             const Expanded(child: SizedBox()),
 
             // Price
-            if (price != null)
+            if (asset.purchase?.price != null)
               StyledPrice(
-                price!,
+                asset.purchase!.price!,
                 style: Theme.of(context).textTheme.labelSmall,
               )
           ],
