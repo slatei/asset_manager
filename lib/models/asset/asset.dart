@@ -15,15 +15,13 @@ class Asset {
     List<String>? labels,
     String? notes,
   })  : _id = id,
-        _room = room,
-        labels = labels ?? [],
         _notes = notes;
 
   String name;
   final String _id;
   Purchase? purchase = Purchase();
   AssetCategory? category;
-  AssetRoom? _room;
+  AssetRoom? room;
   List<String>? labels;
   String? _notes;
 
@@ -32,7 +30,6 @@ class Asset {
 
   // Getters
   String get id => _id;
-  AssetRoom? get room => _room;
   String? get notes => _notes;
 
   DateTime get createdAt => _createdAt;
@@ -79,23 +76,40 @@ class Asset {
   ) {
     final data = snapshot.data()!;
 
+    var name = data['name'] != "" ? data['name'] : "empty";
+
     Asset asset = Asset(
       id: snapshot.id,
-      name: data['name'],
-      room: DefaultRooms.values.firstWhere((r) => r.name == data['room']).room,
-      category: DefaultCategories.values
-          .firstWhere((c) => c.toString() == data['category'])
-          .category,
-      purchase: data['purchase']
-          ? Purchase(
-              price: data['purchase']['price'],
-              date: DateTime.parse(data['purchase']['date']),
-              location: data['purchase']['location'],
-            )
-          : null,
-      labels: data['labels'],
-      notes: data['notes'],
+      name: name,
     );
+
+    if (data['room'] != "null") {
+      asset.room = DefaultRooms.values
+          .firstWhere((r) => r.room.toString() == data['room'])
+          .room;
+    }
+
+    if (data['category'] != "null") {
+      asset.category = DefaultCategories.values
+          .firstWhere((c) => c.category.toString() == data['category'])
+          .category;
+    }
+
+    if (data['purchase'] != "null") {
+      asset.purchase = Purchase(
+        price: data['purchase']['price'] != "null"
+            ? double.tryParse(data['purchase']['price'])
+            : 0.0,
+        date: data['purchase']['date'] != null
+            ? DateTime.parse(data['purchase']['date'])
+            : null,
+        location: data['purchase']['location'].toString(),
+      );
+    }
+
+    if (data['labels'] != null && !data['labels'].isEmpty) {
+      asset.labels = data['labels'];
+    }
 
     return asset;
   }

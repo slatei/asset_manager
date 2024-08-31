@@ -1,6 +1,5 @@
 import 'package:asset_store/screens/asset_lists/assets_list.dart';
 import 'package:asset_store/services/asset_store.dart';
-import 'package:asset_store/state/categories_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -43,10 +42,6 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => AuthState(auth: FirebaseAuth.instance)),
         ChangeNotifierProvider(create: (context) => AssetStore()),
-        ChangeNotifierProvider(
-            create: (context) => CategoriesState(
-                  firestore: FirebaseFirestore.instance,
-                )),
       ],
       child: MaterialApp(
         title: 'Asset Management',
@@ -57,7 +52,8 @@ class App extends StatelessWidget {
         initialRoute: '/',
         routes: {
           // '/': (context) => const AuthWrapper(),
-          '/': (context) => const Sandbox(),
+          '/': (context) => const AssetsList(),
+          '/dashboard': (context) => const AssetsList(),
         },
       ),
     );

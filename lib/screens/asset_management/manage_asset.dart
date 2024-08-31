@@ -42,12 +42,6 @@ class _ManageAssetState extends State<ManageAsset> {
 
     Provider.of<AssetStore>(context, listen: false).addAsset(topLevelAsset);
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Asset was saved'),
-      showCloseIcon: true,
-      duration: Duration(seconds: 2),
-    ));
-
     Navigator.of(context).pop();
   }
 
