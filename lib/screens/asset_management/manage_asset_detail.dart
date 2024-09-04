@@ -38,6 +38,10 @@ class _ManageAssetDetailState extends State<ManageAssetDetail>
     // Initialize the local asset with the passed-in asset
     localAsset = widget.asset;
 
+    // Pre-populate the controllers with existing values from the asset, if available
+    _nameController.text = localAsset.name;
+    _priceController.text = localAsset.purchase?.price?.toString() ?? '';
+
     // Add listeners to update the local asset and notify the parent
     _nameController.addListener(_updateName);
     _priceController.addListener(_updatePrice);

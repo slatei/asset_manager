@@ -108,7 +108,7 @@ class Asset {
     }
 
     if (data['labels'] != null && !data['labels'].isEmpty) {
-      asset.labels = data['labels'];
+      asset.labels = List<String>.from(data['labels']);
     }
 
     return asset;

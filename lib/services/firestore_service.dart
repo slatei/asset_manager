@@ -16,14 +16,9 @@ class FirestoreService {
     return ref.get();
   }
 
-  // static Future<void> updateAsset(Asset asset) async {
-  //   await ref.doc(asset.id).update({
-  //     'name': asset.name,
-  //     'category': asset.category,
-  //     'purchase': asset.purchase,
-  //     'labels': asset.labels,
-  //   });
-  // }
+  static Future<void> updateAsset(Asset asset) async {
+    await ref.doc(asset.id).set(asset, SetOptions(merge: true));
+  }
 
   // delete asset
   static Future<void> deleteAsset(Asset asset) async {

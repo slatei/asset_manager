@@ -17,17 +17,26 @@ class TabName {
 }
 
 class ManageAsset extends StatefulWidget {
-  const ManageAsset({super.key});
+  const ManageAsset({
+    this.asset,
+    super.key,
+  });
+
+  final Asset? asset;
 
   @override
   State<ManageAsset> createState() => _ManageAssetState();
 }
 
 class _ManageAssetState extends State<ManageAsset> {
-  late Asset topLevelAsset = Asset(
-    name: '',
-    id: uuid.v4(),
-  );
+  late Asset topLevelAsset;
+
+  @override
+  void initState() {
+    super.initState();
+    // If an asset is provided, use it; otherwise, create a new one
+    topLevelAsset = widget.asset ?? Asset(name: '', id: uuid.v4());
+  }
 
   void _updateAsset(Asset asset) {
     setState(() {
@@ -40,7 +49,7 @@ class _ManageAssetState extends State<ManageAsset> {
       print('Asset added: ${topLevelAsset.toString()}');
     }
 
-    Provider.of<AssetStore>(context, listen: false).addAsset(topLevelAsset);
+    Provider.of<AssetStore>(context, listen: false).saveAsset(topLevelAsset);
 
     Navigator.of(context).pop();
   }

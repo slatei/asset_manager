@@ -27,6 +27,7 @@ class _ManageAssetImageState extends State<ManageAssetImage>
 
   late Asset localAsset;
 
+  final List<XFile> _imageFiles = [];
   XFile? _imageFile;
 
   @override
@@ -42,6 +43,7 @@ class _ManageAssetImageState extends State<ManageAssetImage>
       _imageFile =
           await widget.imagePicker.pickImage(source: ImageSource.gallery);
       if (_imageFile != null) {
+        _imageFiles.add(_imageFile!);
         setState(() {
           localAsset.addFile(_imageFile!);
         });
@@ -54,10 +56,10 @@ class _ManageAssetImageState extends State<ManageAssetImage>
     }
   }
 
-  Future<void> _removeImage() async {
+  Future<void> _removeImage(image) async {
     setState(() {
-      localAsset.removeFile(_imageFile!);
-      _imageFile = null;
+      localAsset.removeFile(image);
+      _imageFiles.removeWhere((i) => i.hashCode == image.hashCode);
     });
     widget.onUpdate(localAsset);
   }
@@ -68,20 +70,68 @@ class _ManageAssetImageState extends State<ManageAssetImage>
 
     return Column(
       children: [
+        // Add images button
         ElevatedButton(
           onPressed: _pickImage,
           child: const Text('Upload Image'),
         ),
-        const SizedBox(height: 40),
-        if (_imageFile != null) ...[
-          kIsWeb
-              ? Image.network(_imageFile!.path, height: 200)
-              : Image.file(File(_imageFile!.path), height: 200),
-          ElevatedButton(
-            onPressed: _removeImage,
-            child: const Text('Remove'),
+
+        // Display all uploaded images
+        if (_imageFiles.isNotEmpty) ...[
+          GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // 2 images per row
+              crossAxisSpacing: 10, // Horizontal spacing between images
+              mainAxisSpacing: 10, // Vertical spacing between images
+              childAspectRatio: 1, // Square cells
+            ),
+            // GridView.builder with NeverScrollableScrollPhysics:
+            // This prevents the GridView from scrolling independently since it's
+            // inside another scrollable widget.
+            physics: const NeverScrollableScrollPhysics(),
+            // shrinkWrap: true: This makes sure the GridView only takes up as
+            // much space as it needs, avoiding conflicts with the parent scroll view.
+            shrinkWrap:
+                true, // Make GridView take up only as much space as needed
+            itemCount: _imageFiles.length,
+            itemBuilder: (BuildContext context, int index) {
+              final image = _imageFiles[index];
+              return ImageBox(
+                image: image,
+                onRemove: (image) => _removeImage(image),
+              );
+            },
           ),
-        ]
+        ],
+      ],
+    );
+  }
+}
+
+class ImageBox extends StatelessWidget {
+  const ImageBox({
+    required this.image,
+    required this.onRemove,
+    super.key,
+  });
+
+  final XFile image;
+  final void Function(XFile image) onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        kIsWeb
+            ? Image.network(image.path, height: 200)
+            : Image.file(File(image.path), height: 200),
+        Positioned(
+            top: 10,
+            right: 10,
+            child: IconButton(
+              icon: const Icon(Icons.delete_forever),
+              onPressed: () => onRemove(image),
+            )),
       ],
     );
   }
